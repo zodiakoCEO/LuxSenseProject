@@ -1,20 +1,12 @@
-function BtnIngresar({title}:{title:string}){
-    return(
-        <button>{title}</button>
-    );
-}
+import React from 'react';
+import Navbar from './components/Organisms/Navbar';
 
-export default function App (){
-    return(
-        <div>
-            <h1>LuxSense</h1>
-            <BtnIngresar title = "Ingresar"/>
+const App: React.FC = () => {
+  return (
+    <div>
+      <Navbar />
+    </div>
+  );
+};
 
-            <div>
-
-            
-            </div>
-            
-        </div>
-    );
-}
+export default App;
