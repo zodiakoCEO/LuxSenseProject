@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyledIcon = styled.span`
-  color: white;
-  font-size: 1.2rem;
+  color: #000000;
+  font-size: 6rem;
   cursor: pointer;
   &:hover {
     opacity: 0.8;
