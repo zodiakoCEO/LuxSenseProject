@@ -6,7 +6,7 @@ const StyledNavLink = styled.a`
     text-decoration: none;
     font-size: 1rem;
     &:hover {
-        text-decoration: underline
+        opacity: 0.5
         }
     `;
 

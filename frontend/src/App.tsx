@@ -1,24 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from './components/atoms/Button';
+import Navbar from './components/organism/Navbar';
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f3f4f6;
-`;
+const AppContainer = styled.div`
+  min-height: 100vh;
+  `;
 
 const App: React.FC = () => {
-  const handleClick = () => {
-    alert('¡Botón clicado! LuxSense está vivo... o al menos lo intenta.');
-  };
-
   return (
-    <Container>
-      <Button label="Probar LuxSense" onClick={handleClick} />
-    </Container>
+    <AppContainer>
+      <Navbar/>
+      {/*Aqui va el resto de organismos que se iran creando para la pagina */}
+    </AppContainer>
   );
 };
 
