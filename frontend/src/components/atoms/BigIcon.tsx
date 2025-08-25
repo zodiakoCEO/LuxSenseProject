@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const StyledIcon = styled.span`
+const StyledBigIcon = styled.span`
   color: #000000;
   font-size: 6rem;
   cursor: pointer;
@@ -10,17 +10,17 @@ const StyledIcon = styled.span`
   }
 `;
 
-interface IconProps {
+interface BigIconProps {
   children: React.ReactNode;
   ariaLabel: string;
 }
 
-const Icon: React.FC<IconProps> = ({ children, ariaLabel }) => {
+const BigIcon: React.FC<BigIconProps> = ({ children, ariaLabel }) => {
   return (
-    <StyledIcon role="img" aria-label={ariaLabel}>
+    <StyledBigIcon role="img" aria-label={ariaLabel}>
       {children}
-    </StyledIcon>
+    </StyledBigIcon>
   );
 };
 
-export default Icon;
+export default BigIcon;
