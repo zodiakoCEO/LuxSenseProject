@@ -1,25 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import Navbar from './components/organism/Navbar';
-import Footer from './components/organism/Footer';
-import MainSection from './components/organism/MainSection';
-
-const AppContainer = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: #f3f4f6;
-  `;
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import LandingPage from "./components/pages/LandingPage";
 
 const App: React.FC = () => {
   return (
-    <AppContainer>
-      <Navbar/>
-      <MainSection/>
-      {/*Aqui va el resto de organismos que se iran creando para la pagina */}
-      <Footer/>
-    </AppContainer>
-  );
-};
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage/>}/>
+        {/*Aqui van el resto de las rutas */}
+      </Routes>
+    </Router>
+  )
+} 
 
-export default App;
+export default App
