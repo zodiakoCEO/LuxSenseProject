@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Title from "../atoms/Title";
 import Button from "../atoms/Button";
-import Icon from "../atoms/Icon";
+import BigIcon from "../atoms/BigIcon";
 import SearchForm from "../molecules/SearchForm";
 
 const MainSectionContainer = styled.div`
@@ -47,7 +47,7 @@ const MainSection: React.FC = () => {
             </ButtonContainer>
             <SearchForm/>
             <IconContainer>
-                <Icon ariaLabel="lightbulb">💡</Icon>
+                <BigIcon ariaLabel="lightbulb">💡</BigIcon>
             </IconContainer>
         </MainSectionContainer>
     )

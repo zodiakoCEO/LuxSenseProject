@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const StyledIcon = styled.span`
   color: #000000;
-  font-size: 1.5rem;
+  font-size: 6rem;
   cursor: pointer;
   &:hover {
     opacity: 0.8;
