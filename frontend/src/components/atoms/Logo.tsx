@@ -5,14 +5,19 @@ const StyledLogo = styled.div`
     color: white;
     font-size: 1.5rem;
     font-weight: bold;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.8;
+    }
     `;
 
-    interface LogoProps {
-        children: string;
-    }
+interface LogoProps {
+  children: string;
+  onClick?: () => void;
+}
 
-    const Logo: React.FC<LogoProps> = ({ children }) => {
-        return <StyledLogo>{children}</StyledLogo>
-    };
+const Logo: React.FC<LogoProps> = ({ children, onClick }) => {
+  return <StyledLogo onClick={onClick}>{children}</StyledLogo>;
+};
 
-    export default Logo
+export default Logo;

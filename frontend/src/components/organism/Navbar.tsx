@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../atoms/Logo";
 import NavLink from "../atoms/NavLink";
@@ -26,6 +27,14 @@ const NavLinks = styled.ul`
 
 const NavItem = styled.li`
     margin-left: 2rem;
+    a {
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
     `;
 
 const Icons = styled.div`
@@ -35,9 +44,16 @@ const Icons = styled.div`
     `;
 
 const Navbar: React.FC = () => {
+    const navigate = useNavigate()
+
+    const handlogoClick = () => {
+        navigate('/')
+    }
+
+
     return (
         <NavbarContainer>
-            <Logo>LuxSense</Logo>
+            <Logo onClick={handlogoClick}>LuxSense</Logo>
             <NavLinks>
                 <NavItem><NavLink href="#contacto">Contacto</NavLink></NavItem>
                 <NavItem><NavLink href="#quienes-somos">Quienes somos</NavLink></NavItem>
