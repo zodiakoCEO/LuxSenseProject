@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Title from "../atoms/Title";
 import Button from "../atoms/Button";
@@ -29,13 +30,14 @@ const IconContainer = styled.div`
     `;
 
 const MainSection: React.FC = () => {
+    const navigate = useNavigate();
     
     const handleAmbienteClick = () => {
         alert('Navegando a ambientes')
     }
 
     const handleDashboardClick = () => {
-        alert('Navegando a Dashboard')
+       navigate('/dashboard');
     }
 
     return (
