@@ -11,6 +11,7 @@ const FormContainer = styled.div`
   align-items: center;
   width: 100%;
   max-width: 24rem;
+  box-sizing: border-box;
 `;
 
 const Link = styled.a`
@@ -18,6 +19,7 @@ const Link = styled.a`
   text-decoration: none;
   font-size: 0.875rem;
   margin-top: 1rem;
+  cursor: pointer;
   &:hover {
     text-decoration: underline;
   }

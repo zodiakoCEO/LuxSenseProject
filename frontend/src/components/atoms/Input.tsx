@@ -8,6 +8,7 @@ const StyledInput = styled.input`
   border-radius: 0.25rem;
   font-size: 1rem;
   margin-bottom: 1rem;
+  box-sizing: border-box; /* Asegura que padding no aumente el ancho */
   &::placeholder {
     color: #9ca3af;
   }
@@ -21,9 +22,7 @@ interface InputProps {
 }
 
 const Input: React.FC<InputProps> = ({ type, placeholder, value, onChange }) => {
-  return ( 
-  <StyledInput type={type} placeholder={placeholder} value={value} onChange={onChange} />
-  )
+  return <StyledInput type={type} placeholder={placeholder} value={value} onChange={onChange} />;
 };
 
 export default Input;
