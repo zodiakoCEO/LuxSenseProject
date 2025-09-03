@@ -13,11 +13,12 @@ const StyledBigIcon = styled.span`
 interface BigIconProps {
   children: React.ReactNode;
   ariaLabel: string;
+  onClick?: () => void;
 }
 
-const BigIcon: React.FC<BigIconProps> = ({ children, ariaLabel }) => {
+const BigIcon: React.FC<BigIconProps> = ({ children, ariaLabel, onClick }) => {
   return (
-    <StyledBigIcon role="img" aria-label={ariaLabel}>
+    <StyledBigIcon onClick={onClick} role="img" aria-label={ariaLabel}>
       {children}
     </StyledBigIcon>
   );

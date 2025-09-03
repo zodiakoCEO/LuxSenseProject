@@ -50,6 +50,10 @@ const Navbar: React.FC = () => {
         navigate('/')
     }
 
+    const handiconClick = () => {
+        navigate('/login')
+    }
+
 
     return (
         <NavbarContainer>
@@ -60,7 +64,7 @@ const Navbar: React.FC = () => {
                 <NavItem><NavLink href="#como-funciona">¿Cómo funciona?</NavLink></NavItem>
             </NavLinks>
             <Icons>
-                <Icon ariaLabel="user">👤</Icon>
+                <Icon onClick={handiconClick} ariaLabel="user">👤</Icon>
                 <Icon ariaLabel="moon">🌙</Icon>
             </Icons>
         </NavbarContainer>

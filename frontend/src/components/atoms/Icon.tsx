@@ -13,11 +13,12 @@ const StyledIcon = styled.span`
 interface IconProps {
   children: React.ReactNode;
   ariaLabel: string;
+  onClick?: () => void;
 }
 
-const Icon: React.FC<IconProps> = ({ children, ariaLabel }) => {
+const Icon: React.FC<IconProps> = ({ children, ariaLabel, onClick }) => {
   return (
-    <StyledIcon role="img" aria-label={ariaLabel}>
+    <StyledIcon onClick={onClick} role="img" aria-label={ariaLabel}>
       {children}
     </StyledIcon>
   );
