@@ -19,8 +19,8 @@ const RightSide = styled.div`
 const SignupPage: React.FC = () => {
   return (
     <SignupPageContainer>
-      <LeftSide><LogoSection /></LeftSide>
-      <RightSide><SignupSection /></RightSide>
+      <LeftSide><SignupSection /></LeftSide>
+      <RightSide><LogoSection /></RightSide>
     </SignupPageContainer>
   );
 };

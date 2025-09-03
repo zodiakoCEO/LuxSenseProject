@@ -13,6 +13,13 @@ const FormContainer = styled.div`
   max-width: 24rem;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 1rem;
+`;
+
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -30,8 +37,10 @@ const LoginForm: React.FC = () => {
     <FormContainer>
       <Input type="text" placeholder="Usuario" value={username} onChange={(e) => setUsername(e.target.value)} />
       <PasswordInput placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <LoginButton label="Iniciar sesión" onClick={handleLogin} variant="primary" />
-      <LoginButton label="Crear cuenta" onClick={handleSignup} variant="secondary" />
+      <ButtonContainer>
+        <LoginButton label="Iniciar sesión" onClick={handleLogin} variant="primary" />
+        <LoginButton label="Crear cuenta" onClick={handleSignup} variant="secondary" />
+      </ButtonContainer>
     </FormContainer>
   );
 };
