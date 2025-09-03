@@ -9,11 +9,18 @@ import SearchForm from "../molecules/SearchForm";
 const MainSectionContainer = styled.div`
     flex:1;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
     padding: 2rem;
     background-color: #ffffff;
+    `;
+
+const LeftSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
     `;
 
 const ButtonContainer = styled.div`
@@ -26,7 +33,7 @@ const IconContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 2rem;
+
     `;
 
 const MainSection: React.FC = () => {
@@ -42,12 +49,14 @@ const MainSection: React.FC = () => {
 
     return (
         <MainSectionContainer>
-            <Title>Sensorizando tus sentidos al maximo</Title>
-            <ButtonContainer>
-                <Button label="Ambientes" onClick={handleAmbienteClick}/>
-                <Button label="Dashboard" onClick={handleDashboardClick}/>
-            </ButtonContainer>
-            <SearchForm/>
+            <LeftSection>
+                <Title>Sensorizando tus sentidos al maximo</Title>
+                <ButtonContainer>
+                    <Button label="Ambientes" onClick={handleAmbienteClick}/>
+                    <Button label="Dashboard" onClick={handleDashboardClick}/>
+                </ButtonContainer>
+                <SearchForm/>
+            </LeftSection>
             <IconContainer>
                 <BigIcon ariaLabel="lightbulb">💡</BigIcon>
             </IconContainer>
