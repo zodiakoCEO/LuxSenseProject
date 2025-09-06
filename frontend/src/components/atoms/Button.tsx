@@ -17,11 +17,12 @@ const StyledButton = styled.button`
 
 interface ButtonProps {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
+  variant?: 'primary' | 'secondary' | 'success';
 }
 
-const Button: React.FC<ButtonProps> = ({ label, onClick }) => {
-  return <StyledButton onClick={onClick}>{label}</StyledButton>;
+const Button: React.FC<ButtonProps> = ({ label, onClick, variant = 'primary' }) => {
+  return <StyledButton onClick={onClick}>{label}{variant}</StyledButton>;
 };
 
 export default Button;
