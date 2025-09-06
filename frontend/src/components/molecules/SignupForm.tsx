@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Input from '../atoms/Input';
 import PasswordInput from '../atoms/PasswordInput';
-import LoginButton from '../atoms/LoginButton';
+import Button from '../atoms/Button';
 import { useNavigate } from 'react-router-dom';
+import Alert from '../molecules/Alert';
 
 const FormContainer = styled.div`
   display: flex;
@@ -33,17 +34,35 @@ const SignupForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState<'success' | 'error' | 'warning'>('success');
 
   const handleSignup = () => {
-    if (password !== confirmPassword) {
-      alert('Las contraseñas no coinciden');
+    if (!name || !lastName || !user || !email || !password || !confirmPassword) {
+      setAlertType('error');
+      setAlertMessage('Por favor, completa todos los campos.');
+      setIsAlertOpen(true);
       return;
     }
-    alert(`Registrando: ${name}, ${email}`); // Placeholder;
+    if (password !== confirmPassword) {
+      setAlertType('error');
+      setAlertMessage('Las contraseñas no coinciden.');
+      setIsAlertOpen(true);
+      return;
+    }
+    setAlertType('success');
+    setAlertMessage(`Registrando: ${name} ${lastName}, ${email}`);
+    setIsAlertOpen(true);
+    // Placeholder para conexion con backend
   };
 
   const handleBackToLogin = () => {
-    navigate('/login'); 
+    navigate('/login');
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertOpen(false);
   };
 
   return (
@@ -54,8 +73,15 @@ const SignupForm: React.FC = () => {
       <Input type="email" placeholder="Correo" value={email} onChange={(e) => setEmail(e.target.value)} />
       <PasswordInput placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
       <PasswordInput placeholder="Confirmar contraseña" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-      <LoginButton label="Registrarse" onClick={handleSignup} variant="success" />
+      <Button label="Registrarse" onClick={handleSignup} variant="success" size="large" />
       <Link onClick={handleBackToLogin}>Volver a Iniciar sesión</Link>
+      <Alert
+        message={alertMessage}
+        type={alertType}
+        duration={3000}
+        onClose={handleAlertClose}
+        isOpen={isAlertOpen}
+      />
     </FormContainer>
   );
 };

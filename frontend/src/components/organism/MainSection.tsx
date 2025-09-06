@@ -50,10 +50,10 @@ const MainSection: React.FC = () => {
     return (
         <MainSectionContainer>
             <LeftSection>
-                <Title>Sensorizando tus sentidos al maximo</Title>
+                <Title>Sensorizando tus sentidos al máximo</Title>
                 <ButtonContainer>
-                    <Button label="Ambientes" onClick={handleAmbienteClick}/>
-                    <Button label="Dashboard" onClick={handleDashboardClick}/>
+                    <Button label="Ambientes" onClick={handleAmbienteClick} size='large'/>
+                    <Button label="Dashboard" onClick={handleDashboardClick} size='large'/>
                 </ButtonContainer>
                 <SearchForm/>
             </LeftSection>

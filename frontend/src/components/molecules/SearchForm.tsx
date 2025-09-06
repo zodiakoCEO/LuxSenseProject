@@ -1,32 +1,56 @@
-import React,{useState} from "react";
-import styled from "styled-components";
-import SearchInput from "../atoms/SearchInput";
-import SearchButton from "../atoms/SearchButton";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import SearchInput from '../atoms/SearchInput';
+import Button from '../atoms/Button';
+import Alert from './Alert';
 
 const SearchFormContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 2rem;
-    `;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+`;
 
-const SearchForm: React.FC = () =>{
-    const [searchValue, setSearchValue] = useState('');
+const SearchForm: React.FC = () => {
+  const [searchValue, setSearchValue] = useState('')
+  const [isAlertOpen, setIsAlertOpen] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
+  const [alertType, setAlertType] = useState<'success' | 'error' | 'warning'>('success')
 
-    const HandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchValue (e.target.value);
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
 
-    const handleSearch = () => {
-        alert(`Buscando: ${searchValue}`);
-    };
+  const handleSearch = () => {
+    if (!searchValue.trim()) {
+        setAlertType('error');
+        setAlertMessage('P9or favor, ingresa un termino de busqueda.')
+        setIsAlertOpen(true)
+        return
+    }
+    setAlertType('success')    
+    setAlertMessage(`Buscando: ${searchValue}`)
+    setIsAlertOpen(true)
+    //Placeholder para logica de busqueda
+  };
 
-    return (
-        <SearchFormContainer>
-            <SearchInput value={searchValue} onChange={HandleChange} />
-            <SearchButton label="Buscar" onClick={handleSearch} />
-        </SearchFormContainer>
-    )
-}
+  const handleAlertClose = () => {
+    setIsAlertOpen(false)
+  }
 
-export default SearchForm
+  return (
+    <SearchFormContainer>
+      <SearchInput value={searchValue} onChange={handleChange} />
+      <Button label="Buscar" onClick={handleSearch} fixedColor="#10b981" size="large" />
+      <Alert
+        message = {alertMessage}
+        type = {alertType}
+        duration = {3000}
+        onClose = {handleAlertClose}
+        isOpen = {isAlertOpen}
+        />
+    </SearchFormContainer>
+  );
+};
+
+export default SearchForm;
