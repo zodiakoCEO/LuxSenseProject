@@ -1,8 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../atoms/Logo";
-import NavLink from "../atoms/NavLink";
 import Icon from "../atoms/Icon";
 
 const NavbarContainer = styled.nav`
@@ -46,25 +45,25 @@ const Icons = styled.div`
 const Navbar: React.FC = () => {
     const navigate = useNavigate()
 
-    const handlogoClick = () => {
+    const handleLogoClick = () => {
         navigate('/')
     }
 
-    const handiconClick = () => {
+    const handleIconClick = () => {
         navigate('/login')
     }
 
 
     return (
         <NavbarContainer>
-            <Logo onClick={handlogoClick}>LuxSense</Logo>
+            <Logo onClick={handleLogoClick}>LuxSense</Logo>
             <NavLinks>
-                <NavItem><NavLink href="#contacto">Contacto</NavLink></NavItem>
-                <NavItem><NavLink href="#quienes-somos">Quienes somos</NavLink></NavItem>
-                <NavItem><NavLink href="#como-funciona">¿Cómo funciona?</NavLink></NavItem>
+                <NavItem><RouterNavLink to="/contact">Contacto</RouterNavLink></NavItem>
+                <NavItem><RouterNavLink to="/WhoWeAre">Quienes somos</RouterNavLink></NavItem>
+                <NavItem><RouterNavLink to="/HowItWorks">¿Cómo funciona?</RouterNavLink></NavItem>
             </NavLinks>
             <Icons>
-                <Icon onClick={handiconClick} ariaLabel="user">👤</Icon>
+                <Icon onClick={handleIconClick} ariaLabel="user">👤</Icon>
                 <Icon ariaLabel="moon">🌙</Icon>
             </Icons>
         </NavbarContainer>

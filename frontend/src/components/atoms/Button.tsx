@@ -13,18 +13,33 @@ const StyledButton = styled.button<{ variant?: string; size?: string; fixedColor
   &:hover {
     background-color: ${props => props.fixedColor ? props.fixedColor : (props.variant === 'primary' ? '#123456' : props.variant === 'secondary' ? '#4b5563' : props.variant === 'success' ? '#047857' : '#123456')};
   }
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4); /* Resalta al enfocar */
+  }
 `;
 
 interface ButtonProps {
   label: string;
   onClick?: () => void;
   variant?: 'primary' | 'secondary' | 'success';
-  size?: 'default' | 'large'; 
+  size?: 'default' | 'large';
   fixedColor?: string;
+  type?: 'button' | 'submit' | 'reset'; // Añadimos type para formularios
 }
 
-const Button: React.FC<ButtonProps> = ({ label, onClick, variant = 'primary', size = 'default', fixedColor }) => {
-  return <StyledButton onClick={onClick} variant={variant} size={size} fixedColor={fixedColor}>{label}</StyledButton>;
+const Button: React.FC<ButtonProps> = ({ label, onClick, variant = 'primary', size = 'default', fixedColor, type = 'button' }) => {
+  return (
+    <StyledButton
+      onClick={onClick}
+      variant={variant}
+      size={size}
+      fixedColor={fixedColor}
+      type={type} // Permite usar como submit
+    >
+      {label}
+    </StyledButton>
+  );
 };
 
 export default Button;
