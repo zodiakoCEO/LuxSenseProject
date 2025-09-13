@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+button{
+  border: 0;
+  cursor: pointer;
+}
+
+.body{
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  
+  background-color: black;
+  background-image: url(assets\Fondo2.svg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  overflow: auto;
+}
