@@ -11,3 +11,5 @@ const DashboardPage: React.FC = () => {
 }
 
 export default DashboardPage;
+
+//verificar conexion con el dispositivo antes de renderisar 

@@ -19,7 +19,7 @@ function Main() {
             </div>
             
             <div className="notificaciones">
-                <div className="notificacion notif_1">
+                <div className="notificacion notif_1"> {/*todas la notis son card */}
                     <div>
                         <h5>Cocina</h5>
                         <h5>Se regulo la energia suministrada para cumplir con la meta de 35kwh al mes </h5>
@@ -81,3 +81,5 @@ function Main() {
 }
 
 export default Main;
+
+// text, img, button, card,

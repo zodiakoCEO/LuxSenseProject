@@ -39,3 +39,5 @@ function Header() {
 }
 
 export default Header;
+
+//input, button, img, text, link, 
