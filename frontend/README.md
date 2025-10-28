@@ -223,3 +223,21 @@ Arquitectura: Atomic Design
 Este proyecto es parte de un trabajo académico de grado.
 
 © 2025 LuxSense. Todos los derechos reservados.
+
+
+PANGA
+
+Primero ejecute:
+
+cd frontend (esto lo va a meter en la carpeta de frontend porque es donde esta el front dah)
+npm run dev (esto ejecuta como tal la aplicacion)
+
+si no le abre automaticamente en el navegador, pegue el localhost en el navegador y ya ahí se le abre:
+
+Este es el que yo uso:
+
+ http://localhost:5173/
+
+ igual al ejecutar el comando le sale el localhost, si no le sale el 5173, use el que sea que le salga.
+ 
+ Rompala hpta que usted es muy teso. ^^
