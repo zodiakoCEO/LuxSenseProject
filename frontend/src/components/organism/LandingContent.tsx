@@ -25,12 +25,12 @@ const LandingContent: React.FC = () => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate('/dashboard');
+    navigate('/Dashboard');
   };
 
   return (
     <ContentContainer>
-      <Logo fontSize="5rem" />
+      <Logo fontSize="5rem" gradient={true}/>
       <DescriptionText size="1.25rem" color="#CCCCCC" align="center">
         Esta pagina esta en construcción, de momento te invitamos a que veas nuestro DashBoard, gracias por la paciencia ^^
       </DescriptionText>
