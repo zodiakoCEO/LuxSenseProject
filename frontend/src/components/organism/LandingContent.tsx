@@ -34,7 +34,7 @@ const LandingContent: React.FC = () => {
       <DescriptionText size="1.25rem" color="#CCCCCC" align="center">
         Esta pagina esta en construcción, de momento te invitamos a que veas nuestro DashBoard, gracias por la paciencia ^^
       </DescriptionText>
-      <Button onClick={handleNavigate}>
+      <Button gradient={true} onClick={handleNavigate}>
         Ir al DashBoard
       </Button>
     </ContentContainer>
