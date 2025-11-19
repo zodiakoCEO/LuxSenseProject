@@ -42,6 +42,7 @@ const BottomSection = styled.div`
 `;
 
 export const Sidebar: React.FC = () => {
+
   return (
     <SidebarContainer>
       <LogoSection>
@@ -57,7 +58,7 @@ export const Sidebar: React.FC = () => {
       <BottomSection>
         <SidebarItem icon="❓" label="Ayuda" path="/ayuda" />
         <SidebarItem icon="⚙️" label="Ajustes" path="/ajustes" />
-        <SidebarItem icon="🚪" label="Salir" path="/logout" />
+        <SidebarItem icon="🚪" label="Salir" path="/"/>
       </BottomSection>
     </SidebarContainer>
   );

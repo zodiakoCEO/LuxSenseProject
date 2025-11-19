@@ -36,7 +36,7 @@ const EnergyConsumptionSection: React.FC = () => {
       <ProgressBarsContainer>
         <SectionTitle>Ahorro de energía</SectionTitle>
         <ProgressBar label="Mes actual" percentage={75} color="#00FF09" />
-        <ProgressBar label="Mes pasado" percentage={25} color="#FF00FF" />
+        <ProgressBar label="Mes pasado" percentage={25} color="#AE00A2" />
       </ProgressBarsContainer>
     </SectionContainer>
   );

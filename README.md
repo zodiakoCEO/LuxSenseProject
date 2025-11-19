@@ -17,15 +17,15 @@ cd luxsense-frontend
 Paso 2: Instalar Dependencias
 bash
 npm install
-O si usas yarn:
 
+O si usas yarn:
 bash
 yarn install
 Paso 3: Ejecutar el Proyecto en Desarrollo
 bash
 npm run dev
-O con yarn:
 
+O con yarn:
 bash
 yarn dev
 El proyecto estará disponible en: http://localhost:5173 (o el puerto que Vite asigne)
@@ -154,21 +154,26 @@ React Router	Librería para manejo de rutas
 Recharts	Librería para gráficos y visualización de datos
 react-circular-progressbar	Componente para métricas circulares
 🎨 Paleta de Colores
-css
+
+CSS
 /* Colores principales */
 #00FF09  /* Verde neón - Primary */
 #00E5FF  /* Cyan - Accent */
 #FF00FF  /* Magenta - Gráficos */
+#AE00A2  /* Morado - Graficos*/
 #FFFFFF  /* Blanco - Texto principal */
 #CCCCCC  /* Gris claro - Texto secundario */
 #1a1a2e  /* Azul oscuro - Fondo principal */
 #0f172a  /* Azul más oscuro - Sidebar */
+
+
 🔧 Scripts Disponibles
 bash
 npm run dev       # Inicia el servidor de desarrollo
 npm run build     # Compila el proyecto para producción
 npm run preview   # Vista previa de la build de producción
 npm run lint      # Ejecuta el linter (si está configurado)
+
 📚 Reglas de Desarrollo
 ✅ Buenas prácticas:
 Siempre usa TypeScript → Define interfaces para las props de los componentes

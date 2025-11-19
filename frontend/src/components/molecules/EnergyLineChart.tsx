@@ -55,7 +55,7 @@ const ChartSubtitle = styled.p`
   margin: 0;
   
   span {
-    color: #FF00FF;
+    color: #AE00A2;
     font-weight: 600;
   }
 `;
@@ -81,8 +81,8 @@ const EnergyLineChart: React.FC = () => {
             
             {/* Gradiente para la línea del mes pasado */}
             <linearGradient id="colorLastMonth" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#FF00FF" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="#FF00FF" stopOpacity={0.3}/>
+              <stop offset="5%" stopColor="#AE00A2" stopOpacity={0.8}/>
+              <stop offset="95%" stopColor="#AE00A2" stopOpacity={0.3}/>
             </linearGradient>
           </defs>
           
@@ -127,10 +127,10 @@ const EnergyLineChart: React.FC = () => {
           <Line 
             type="monotone" 
             dataKey="lastMonth" 
-            stroke="#FF00FF" 
+            stroke="#AE00A2" 
             strokeWidth={3}
-            dot={{ fill: '#FF00FF', r: 4 }}
-            activeDot={{ r: 6, fill: '#FF00FF' }}
+            dot={{ fill: '#AE00A2', r: 4 }}
+            activeDot={{ r: 6, fill: '#AE00A2' }}
             name="Mes pasado"
           />
         </LineChart>

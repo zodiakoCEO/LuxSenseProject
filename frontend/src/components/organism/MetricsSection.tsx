@@ -35,7 +35,7 @@ const MetricsSection: React.FC = () => {
         title="Potencia activa"
         value={40}
         unit="KW"
-        color="#FF00FF"
+        color="#AE00A2"
         percentage={70}
       />
     </MetricsContainer>
