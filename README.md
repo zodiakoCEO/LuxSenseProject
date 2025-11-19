@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 🌟 LuxSense - Frontend
 📋 Descripción del Proyecto
 LuxSense es una aplicación web de monitoreo y control de consumo energético inteligente. El frontend está desarrollado con React, TypeScript, Vite y Linaria, siguiendo una arquitectura basada en Atomic Design para garantizar componentes reutilizables, escalables y mantenibles.
@@ -246,3 +247,6 @@ Este es el que yo uso:
  igual al ejecutar el comando le sale el localhost, si no le sale el 5173, use el que sea que le salga.
  
  Rompala hpta que usted es muy teso. ^^
+=======
+
+>>>>>>> e1454cdb38997992e05b25d6931dd0bca1f6496f
