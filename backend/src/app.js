@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 
 //Rutas
-import dashboardRoutes from './src/routes/DashboardRoutes.js'
+import dashboardRoutes from './routes/DashboardRoutes.js'
 
 dotenv.config();
 const app = express();
