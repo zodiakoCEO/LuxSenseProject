@@ -25,9 +25,14 @@ async function start() {
       process.exit(0);
     });
   } catch (error) {
+    console.error('=== FULL ERROR ===');
+    console.error(error);
+    console.error('Stack:', error.stack);
+    console.error('Message:', error.message);
     logger.error('Server startup failed', error.message);
     process.exit(1);
-  }
+}
+
 }
 
 start();

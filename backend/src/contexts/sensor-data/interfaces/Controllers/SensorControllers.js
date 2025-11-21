@@ -9,10 +9,10 @@ export class SensorController {
 
     async postReading (req, res, next) {
         try {
-            const {corriente_A, voltaje_V, potencia_W, energia_kWh, estado, anomalia, id_dispositivo } = req.doby;
+            const {corriente_A, voltaje_V, potencia_W, energia_kWh, estado, anomalia, id_dispositivo } = req.body;
 
             if (!corriente_A || !voltaje_V || !potencia_W || !id_dispositivo) {
-                throw new ValidationError('Campors requeridos invalidos')
+                throw new ValidationError('campos requeridos invalidos')
             }
 
             const result = await this.recordSensorReading.execute({

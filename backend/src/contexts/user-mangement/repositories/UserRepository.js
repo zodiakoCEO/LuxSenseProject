@@ -9,7 +9,7 @@ export class UserRepository {
     async create (email, password_hash, nombre, id_rol = 2) {
         const connection = await this.pool.getConnection()
         try {
-            const [result] = await connection.excute(
+            const [result] = await connection.execute(
             'INSERT INTO usuarios (email, password_hash, nombre, id_rol, fecha_creacion) VALUES (?, ?, ?, ?, NOW())',
             [email, password_hash, nombre, id_rol]
             )
@@ -30,7 +30,7 @@ export class UserRepository {
     async findById(id_usuario){
         const connection = await this.pool.getConnection();
         try {
-            const [rows] = await connection.excute(
+            const [rows] = await connection.execute(
                 'SELECT * FROM usuarios WHERE id_usuario = ?',
                 [id_usuario]
             )
@@ -38,14 +38,14 @@ export class UserRepository {
             if (rows.length === 0 ) return null;
             return new User(rows[0]);
         } finally {
-            connection.realese()
+            connection.release()
         }
     }
 
     async findByEmail(email) {
         const connection = await this.pool.getConnection()
         try {
-            const [rows] = await connection.excute(
+            const [rows] = await connection.execute(
                 'SELECT * FROM usuarios WHERE email = ?',
                 [email]
             )
@@ -53,7 +53,7 @@ export class UserRepository {
             if (rows.length === 0 ) return null;
             return new User(rows[0]);
         } finally {
-            connection.realese()
+            connection.release()
         }     
     }
 

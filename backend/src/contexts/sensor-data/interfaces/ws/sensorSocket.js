@@ -11,21 +11,27 @@ export class SensorSocketManager {
         this.io = new Server(server, {
             cors: {
                 origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-                credentials: true
-            }
+                credentials: true,
+                methods: ['GET', 'POST']
+            },
+            transports: ['websocket', 'polling']
         })
 
-        this.io.on('coneccion', (socket) => {
-            logger.info(`Cliente Conectado: ${socket.id}`)
+        this.io.on('connection', (socket) => {
+            logger.info(`📡 Cliente Conectado: ${socket.id}`)
 
-            socket.on('Coneccion: dispositivo', (id_dispositivo)=> {
-                socket.join(`dispositivio:${id_dispositivo}`);
-                logger.succes(`Cliente conectado con dispositivo ${id_dispositivo}`)
+            socket.on('subscribe:device', (id_dispositivo) => {
+                socket.join(`device:${id_dispositivo}`);
+                logger.success(`✅ Cliente conectado con dispositivo ${id_dispositivo}`)
             })
 
-            socket.on(`Desconeccion: dispositivo`, (id_dispositivo) => {
-                socket.leave(`dispositivo: ${id_dispositivo}`)
-                logger.info(`clientes desconectado del dispositivo ${id_dispositivo}`)
+            socket.on('unsubscribe:device', (id_dispositivo) => {
+                socket.leave(`device:${id_dispositivo}`)
+                logger.info(`📴 Cliente desconectado del dispositivo ${id_dispositivo}`)
+            })
+
+            socket.on('disconnect', () => {
+                logger.info(`📴 Cliente desconectado: ${socket.id}`)
             })
         })
 
@@ -33,10 +39,10 @@ export class SensorSocketManager {
     }
 
     broadcastNewReading(id_dispositivo, reading) {
-        this.io.to(`dispositivo: ${id_dispositivo}`).emit('sensor: nueva_lectura', reading)
+        this.io.to(`device:${id_dispositivo}`).emit('sensor:new_reading', reading)
     }
 
     broadcastAnomaly(id_dispositivo, anomaly) {
-        this.io.to(`dispositivo: ${id_dispositivo}`).emit('sensor: anomalia', anomaly)
+        this.io.to(`device:${id_dispositivo}`).emit('sensor:anomaly', anomaly)
     }
 }

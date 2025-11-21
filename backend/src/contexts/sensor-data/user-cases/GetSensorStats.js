@@ -4,7 +4,7 @@ export class GetSensorStats {
     }
 
     async execute(id_dispositivo, hours = 24) {
-        const stats = await this.repository.getstats(id_dispositivo, hours);
+        const stats = await this.repository.getStats(id_dispositivo, hours);
 
         if (!stats) {
             return {
