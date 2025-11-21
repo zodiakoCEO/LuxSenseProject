@@ -33,10 +33,12 @@ class ApiService {
     });
   }
 
-  // ✅ Usa DeviceReading[] como tipo de retorno
+  // ✅ Usa /sensors como prefijo (donde está registrado el router)
   async getDeviceReadings(deviceId: string): Promise<DeviceReading[]> {
     try {
-      const response = await this.axiosInstance.get(`/device/${deviceId}/readings`);
+      const response = await this.axiosInstance.get(
+        `/sensors/device/${deviceId}/readings`
+      );
       return response.data.data || response.data;
     } catch (error) {
       console.error('Error fetching device readings:', error);
@@ -44,10 +46,12 @@ class ApiService {
     }
   }
 
-  // ✅ Usa DeviceReading[] como tipo de retorno
+  // ✅ Usa /sensors como prefijo
   async getDeviceStats(deviceId: string): Promise<DeviceReading[]> {
     try {
-      const response = await this.axiosInstance.get(`/device/${deviceId}/stats`);
+      const response = await this.axiosInstance.get(
+        `/sensors/device/${deviceId}/stats`
+      );
       return response.data.data || response.data;
     } catch (error) {
       console.error('Error fetching device stats:', error);
@@ -55,10 +59,10 @@ class ApiService {
     }
   }
 
-  // ✅ Usa DeviceReading como tipo de parámetro
+  // ✅ Usa /sensors como prefijo
   async postDeviceReading(data: DeviceReading): Promise<{ success: boolean; message: string }> {
     try {
-      const response = await this.axiosInstance.post('/device/readings', data);
+      const response = await this.axiosInstance.post('/sensors/device/readings', data);
       return response.data;
     } catch (error) {
       console.error('Error posting device reading:', error);
@@ -66,6 +70,7 @@ class ApiService {
     }
   }
 
+  // ✅ Usa /auth como prefijo (donde está registrado)
   async getUserProfile(): Promise<UserProfile> {
     try {
       const response = await this.axiosInstance.get('/auth/profile');

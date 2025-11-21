@@ -20,6 +20,7 @@ import { GetSensorReadings } from './contexts/sensor-data/user-cases/GetSensorRe
 import { GetSensorStats } from './contexts/sensor-data/user-cases/GetSensorStats.js';
 import { CreateUser } from './contexts/user-mangement/use-cases/CreateUser.js';
 import { AuthenticateUser } from './contexts/user-mangement/use-cases/AuthenticateUser.js';
+import { GetUserProfile } from './contexts/user-mangement/use-cases/GetUserProfile.js'
 
 
 // ============================================
@@ -100,7 +101,8 @@ export async function initializeApp() {
         const tokenService = new TokenService();
         const createUser = new CreateUser(userRepo, eventBus);
         const authenticateUser = new AuthenticateUser(userRepo, tokenService);
-        const authController = new AuthController(createUser, authenticateUser);
+        const getUserProfile = new GetUserProfile(userRepo);
+        const authController = new AuthController(createUser, authenticateUser, getUserProfile);
 
 
         // 6️⃣ REGISTRAR RUTAS

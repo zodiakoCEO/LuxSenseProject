@@ -1,9 +1,10 @@
 import { ValidationError } from '../../../../shared/errors/AppError.js'
 
 export class AuthController {
-    constructor(createUser, authenticateUser) {
+    constructor(createUser, authenticateUser, getUserProfile) {
         this.createUser = createUser,
-        this.authenticateUser = authenticateUser
+        this.authenticateUser = authenticateUser,
+        this.getUserProfile = getUserProfile
     }
 
     async register (req,res, next) {
@@ -44,4 +45,20 @@ export class AuthController {
             next(error)
         }
     }
+
+      async getProfile(req, res, next) {
+        try {
+            const { id_usuario } = req.user;
+
+            const userProfile = await this.getUserProfile.execute(id_usuario);
+
+        res.json({
+            success: true,
+            data: userProfile
+        });
+        } catch (error) {
+        next(error);
+        }
+    }
 }
+
