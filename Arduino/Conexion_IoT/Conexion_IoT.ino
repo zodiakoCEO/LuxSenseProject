@@ -1,136 +1,104 @@
-/*
-  ESP32 + PIR HC-SR501 + Relé 8 Canales 12V
-  -----------------------------------------
-  Hardware:
-  - ESP32 (cualquier modelo compatible con Arduino IDE)
-  - Sensor PIR HC-SR501:
-      VCC -> 5V ESP32
-      GND -> GND ESP32
-      OUT -> GPIO12 (D12)
-  - Módulo Relé 8 canales 12V:
-      VCC -> 5V ESP32
-      GND -> GND ESP32
-      IN1 -> GPIO26 (D26)
-      Alimentación relés: 12V externa con GND común
-  - Carga (bombillo) conectada a NC/NO del relé
+#include <WiFi.h>
+#include <HTTPClient.h>
 
-  Funcionalidad:
-  - Detecta movimiento con PIR
-  - Activa relé para encender lámpara
-  - Mantiene lámpara encendida mientras hay movimiento
-  - Apaga cuando no detecta movimiento
-  - Monitor serial para debug
-*/
+// Definición de Pines
+#define PIR_A_PIN 32
+#define PIR_B_PIN 27
+#define RELE_A_PIN 26
+#define RELE_B_PIN 25
 
-// ==================== CONFIGURACIÓN DE PINES ====================
-#define PIR_PIN     12    // Sensor PIR HC-SR501 conectado a GPIO12
-#define RELAY_PIN   26    // Relé IN1 conectado a GPIO26
+const long tiempoEncendido = 10000; // 10 segundos
 
-// ==================== CONFIGURACIÓN DE TIEMPOS ====================
-const unsigned long DEBOUNCE_TIME = 200;      // Tiempo antirrebote PIR (ms)
-const unsigned long RELAY_ON_TIME = 5000;     // Tiempo que permanece encendido el relé después del último movimiento (ms)
+unsigned long tiempoUltimoMovimientoA = 0;
+unsigned long tiempoUltimoMovimientoB = 0;
 
-// ==================== VARIABLES GLOBALES ====================
-bool motionDetected = false;
-bool relayState = false;
-unsigned long lastMotionTime = 0;
-unsigned long lastDebounceTime = 0;
-int lastPirState = LOW;
+// ---- CREDENCIALES WIFI ----
+const char* ssid = "TU_SSID";
+const char* password = "TU_PASSWORD";
 
-// ==================== SETUP ====================
+// ---- URL DE TU BACKEND ----
+String serverUrl = "http://TU_IP:PUERTO/api/evento";
+
+// ---- FUNCION PARA ENVIAR DATOS ----
+void enviarEvento(String zona, String accion) {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    http.begin(serverUrl);
+    http.addHeader("Content-Type", "application/json");
+
+    String json = "{\"zona\":\"" + zona + "\",\"accion\":\"" + accion + "\"}";
+
+    int codigo = http.POST(json);
+
+    Serial.print("Envío a backend: ");
+    Serial.println(json);
+    Serial.print("Código respuesta: ");
+    Serial.println(codigo);
+
+    http.end();
+  } else {
+    Serial.println("WiFi desconectado, no se pudo enviar.");
+  }
+}
+
 void setup() {
-  // Inicializar comunicación serial
   Serial.begin(115200);
-  delay(1000);
-  Serial.println("\n\n=================================");
-  Serial.println("ESP32 + PIR + Relé Iniciado");
-  Serial.println("=================================");
-  
-  // Configurar pines
-  pinMode(PIR_PIN, INPUT);
-  pinMode(RELAY_PIN, OUTPUT);
-  
-  // Estado inicial del relé (apagado)
-  // IMPORTANTE: La mayoría de módulos son ACTIVO BAJO (LOW = ON, HIGH = OFF)
-  digitalWrite(RELAY_PIN, HIGH);  // Relé apagado
-  relayState = false;
-  
-  Serial.println("Configuración completada:");
-  Serial.print("  - PIR en GPIO: ");
-  Serial.println(PIR_PIN);
-  Serial.print("  - Relé en GPIO: ");
-  Serial.println(RELAY_PIN);
-  Serial.println("Sistema listo. Esperando movimiento...\n");
+
+  pinMode(PIR_A_PIN, INPUT);
+  pinMode(PIR_B_PIN, INPUT);
+  pinMode(RELE_A_PIN, OUTPUT);
+  pinMode(RELE_B_PIN, OUTPUT);
+
+  digitalWrite(RELE_A_PIN, HIGH);
+  digitalWrite(RELE_B_PIN, HIGH);
+
+  Serial.println("Conectando al WiFi...");
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("\nWiFi conectado.");
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
 }
 
-// ==================== LOOP PRINCIPAL ====================
 void loop() {
-  // Leer estado del sensor PIR
-  int pirReading = digitalRead(PIR_PIN);
-  
-  // ========== ANTIRREBOTE DEL PIR ==========
-  if (pirReading != lastPirState) {
-    lastDebounceTime = millis();
+
+  // --- ESPACIO 1 ---
+  if (digitalRead(PIR_A_PIN) == HIGH) {
+    tiempoUltimoMovimientoA = millis();
+    digitalWrite(RELE_A_PIN, LOW);
+
+    Serial.println("Movimiento en ESPACIO 1");
+    enviarEvento("ESPACIO_1", "Movimiento");
   }
-  
-  if ((millis() - lastDebounceTime) > DEBOUNCE_TIME) {
-    // Si el estado es estable, procesarlo
-    if (pirReading == HIGH && !motionDetected) {
-      motionDetected = true;
-      lastMotionTime = millis();
-      
-      // Activar relé (encender lámpara)
-      if (!relayState) {
-        activateRelay();
-      }
-      
-      Serial.println("MOVIMIENTO DETECTADO!");
-      Serial.print("   Tiempo: ");
-      Serial.print(millis() / 1000);
-      Serial.println(" seg");
-    }
-    
-    if (pirReading == HIGH) {
-      // Actualizar tiempo mientras sigue detectando movimiento
-      lastMotionTime = millis();
-      motionDetected = true;
+
+  if (millis() - tiempoUltimoMovimientoA > tiempoEncendido) {
+    digitalWrite(RELE_A_PIN, HIGH);
+
+    // Enviar solo si estaba encendido
+    if (millis() - tiempoUltimoMovimientoA < tiempoEncendido + 50) {
+      enviarEvento("ESPACIO_1", "ApagadoAutomático");
     }
   }
-  
-  lastPirState = pirReading;
-  
-  // ========== CONTROL DEL RELÉ ==========
-  // Si hay movimiento reciente, mantener relé activo
-  if (motionDetected) {
-    unsigned long timeSinceMotion = millis() - lastMotionTime;
-    
-    if (timeSinceMotion > RELAY_ON_TIME) {
-      // Apagar relé si pasó el tiempo sin movimiento
-      if (relayState) {
-        deactivateRelay();
-      }
-      motionDetected = false;
-      Serial.println("⚪ Sin movimiento - Lámpara apagada");
-      Serial.println("-----------------------------------\n");
+
+  // --- ESPACIO 2 ---
+  if (digitalRead(PIR_B_PIN) == HIGH) {
+    tiempoUltimoMovimientoB = millis();
+    digitalWrite(RELE_B_PIN, LOW);
+
+    Serial.println("Movimiento en ESPACIO 2");
+    enviarEvento("ESPACIO_2", "Movimiento");
+  }
+
+  if (millis() - tiempoUltimoMovimientoB > tiempoEncendido) {
+    digitalWrite(RELE_B_PIN, HIGH);
+
+    if (millis() - tiempoUltimoMovimientoB < tiempoEncendido + 50) {
+      enviarEvento("ESPACIO_2", "ApagadoAutomático");
     }
   }
-  
-  // Pequeño delay para estabilidad
-  delay(50);
-}
-
-// ==================== FUNCIONES AUXILIARES ====================
-
-// Función para activar el relé (encender lámpara)
-void activateRelay() {
-  digitalWrite(RELAY_PIN, LOW);  // ACTIVO BAJO: LOW = encender relé
-  relayState = true;
-  Serial.println("RELÉ ACTIVADO - Lámpara encendida");
-}
-
-// Función para desactivar el relé (apagar lámpara)
-void deactivateRelay() {
-  digitalWrite(RELAY_PIN, HIGH);  // ACTIVO BAJO: HIGH = apagar relé
-  relayState = false;
-  Serial.println(" RELÉ DESACTIVADO - Lámpara apagada");
 }
