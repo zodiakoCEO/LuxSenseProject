@@ -231,7 +231,6 @@ Este proyecto es parte de un trabajo académico de grado.
 © 2025 LuxSense. Todos los derechos reservados.
 
 
-PANGA
 
 Primero ejecute:
 
@@ -246,7 +245,7 @@ Este es el que yo uso:
 
  igual al ejecutar el comando le sale el localhost, si no le sale el 5173, use el que sea que le salga.
  
- Rompala hpta que usted es muy teso. ^^
+
 =======
 
 >>>>>>> e1454cdb38997992e05b25d6931dd0bca1f6496f
