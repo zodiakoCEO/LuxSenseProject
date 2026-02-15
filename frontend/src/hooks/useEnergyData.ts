@@ -1,6 +1,6 @@
 // src/hooks/useEnergyData.ts
 import { useState, useEffect } from 'react';
-import type { DeviceReading, EnergyData } from '../../../backend/src/types/sensor';
+import type { DeviceReading, EnergyData } from '../types/shared';
 import ApiService from '../services/api';
 
 interface UseEnergyDataReturn {
