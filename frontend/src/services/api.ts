@@ -13,9 +13,6 @@ export interface UserProfile {
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const SENSORS_PREFIX = '/sensors';
-const AUTH_PREFIX = '/auth';
-
 class ApiService {
   private axiosInstance: AxiosInstance;
 
@@ -36,10 +33,11 @@ class ApiService {
     });
   }
 
+  // ✅ Usa /sensors como prefijo (donde está registrado el router)
   async getDeviceReadings(deviceId: string): Promise<DeviceReading[]> {
     try {
       const response = await this.axiosInstance.get(
-        `${SENSORS_PREFIX}/device/${deviceId}/readings`
+        `/sensors/device/${deviceId}/readings`
       );
       return response.data.data || response.data;
     } catch (error) {
@@ -48,10 +46,11 @@ class ApiService {
     }
   }
 
+  // ✅ Usa /sensors como prefijo
   async getDeviceStats(deviceId: string): Promise<DeviceReading[]> {
     try {
       const response = await this.axiosInstance.get(
-        `${SENSORS_PREFIX}/device/${deviceId}/stats`
+        `/sensors/device/${deviceId}/stats`
       );
       return response.data.data || response.data;
     } catch (error) {
@@ -60,12 +59,10 @@ class ApiService {
     }
   }
 
+  // ✅ Usa /sensors como prefijo
   async postDeviceReading(data: DeviceReading): Promise<{ success: boolean; message: string }> {
     try {
-      const response = await this.axiosInstance.post(
-        `${SENSORS_PREFIX}/device/readings`,
-        data
-      );
+      const response = await this.axiosInstance.post('/sensors/device/readings', data);
       return response.data;
     } catch (error) {
       console.error('Error posting device reading:', error);
@@ -73,9 +70,10 @@ class ApiService {
     }
   }
 
+  // ✅ Usa /auth como prefijo (donde está registrado)
   async getUserProfile(): Promise<UserProfile> {
     try {
-      const response = await this.axiosInstance.get(`${AUTH_PREFIX}/profile`);
+      const response = await this.axiosInstance.get('/auth/profile');
       return response.data.data || response.data;
     } catch (error) {
       console.error('Error fetching user profile:', error);
