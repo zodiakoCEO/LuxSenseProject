@@ -14,9 +14,10 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@luxsense/shared-types": "file:.../shared/types",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.3.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^7.0.0",
@@ -24,8 +25,7 @@
     "ping": "^0.4.4",
     "router": "^2.2.0",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
-    "@luxsense/shared-types": "file:.../shared/types"
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",

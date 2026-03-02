@@ -16,6 +16,22 @@ const ContentContainer = styled.div`
   margin: 0 auto;
 `;
 
+const ButtonsContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+
+    > button {
+      width: 100%;
+      max-width: 260px;
+    }
+  }
+`;
+
 const DescriptionText = styled(Text)`
   max-width: 700px;
   text-align: center;
@@ -24,19 +40,29 @@ const DescriptionText = styled(Text)`
 const LandingContent: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => {
+  const handleNavigateDashboard = () => {
     navigate('/Dashboard');
+  };
+
+  const handleNavigateLogin = () => {
+    navigate('/login'); // cambia esta ruta si tu login está en otra
   };
 
   return (
     <ContentContainer>
-      <Logo fontSize="5rem" gradient={true}/>
+      <Logo fontSize="5rem" gradient={true} />
       <DescriptionText size="1.25rem" color="#CCCCCC" align="center">
-        Esta pagina esta en construcción, de momento te invitamos a que veas nuestro DashBoard, gracias por la paciencia ^^
+        Esta página está en construcción, de momento te invitamos a que veas nuestro DashBoard, gracias por la paciencia ^^
       </DescriptionText>
-      <Button gradient={true} onClick={handleNavigate}>
-        Ir al DashBoard
-      </Button>
+
+      <ButtonsContainer>
+        <Button gradient={true} onClick={handleNavigateDashboard}>
+          Ir al DashBoard
+        </Button>
+        <Button gradient={false} variant="secondary" onClick={handleNavigateLogin}>
+          Ir al Login
+        </Button>
+      </ButtonsContainer>
     </ContentContainer>
   );
 };
