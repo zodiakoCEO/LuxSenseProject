@@ -3,7 +3,7 @@ import { styled } from '@linaria/react';
 import React from 'react';
 
 interface CheckboxProps {
-  label: string;
+  label: React.ReactNode;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
 }
