@@ -4,10 +4,25 @@ import { styled } from '@linaria/react';
 import Text from '../atoms/Text';
 import RegisterForm from '../molecules/RegisterForm';
 
+interface RegisterData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  acceptTerms: boolean;
+  acceptTips: boolean;
+}
+
+interface RegisterFormSectionProps {
+  onOpenTerms: () => void;
+  onOpenPrivacy: () => void;
+}
+
 const Panel = styled.section`
   width: 460px;
   max-width: 100%;
-  background-color: #101727;
+  background-color: #020617;
   border-radius: 16px;
   padding: 2.5rem 2.75rem;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
@@ -33,22 +48,16 @@ const Subtitle = styled(Text)`
   max-width: 320px;
 `;
 
-const RegisterFormSection: React.FC = () => {
+const RegisterFormSection: React.FC<RegisterFormSectionProps> = ({
+  onOpenTerms,
+  onOpenPrivacy,
+}) => {
   const [loading, setLoading] = useState(false);
   const [error] = useState<string | null>(null);
 
-  const handleRegister = async (data: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    acceptTerms: boolean;
-    acceptTips: boolean;
-  }) => {
+  const handleRegister = async (data: RegisterData) => {
     setLoading(true);
     try {
-      // TODO: llamar a tu endpoint /api/auth/register
       console.log('Registro:', data);
     } finally {
       setLoading(false);
@@ -66,7 +75,13 @@ const RegisterFormSection: React.FC = () => {
         </Subtitle>
       </div>
 
-      <RegisterForm onSubmit={handleRegister} loading={loading} error={error || undefined} />
+      <RegisterForm
+        onSubmit={handleRegister}
+        loading={loading}
+        error={error || undefined}
+        onOpenTerms={onOpenTerms}
+        onOpenPrivacy={onOpenPrivacy}
+      />
     </Panel>
   );
 };

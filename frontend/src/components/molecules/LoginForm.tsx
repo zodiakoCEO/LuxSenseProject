@@ -10,6 +10,8 @@ interface LoginFormProps {
   onSubmit: (email: string, password: string, remember: boolean) => void;
   loading?: boolean;
   error?: string;
+  onOpenTerms: () => void;
+  onOpenPrivacy: () => void;
 }
 
 const FormWrapper = styled.form`
@@ -25,7 +27,36 @@ const RememberRow = styled.div`
   align-items: center;
 `;
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, error }) => {
+const InlineLink = styled.span`
+  color: #00e5ff;
+  cursor: pointer;
+  text-decoration: underline;
+`;
+
+const SmallText = styled.p`
+  margin: 0;
+  margin-top: 0.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #9ca3af;
+`;
+
+const BottomText = styled.p`
+  margin: 0;
+  margin-top: 0.75rem;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #9ca3af;
+`;
+
+const LoginForm: React.FC<LoginFormProps> = ({
+  onSubmit,
+  loading,
+  error,
+  onOpenTerms,
+  onOpenPrivacy,
+}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
@@ -65,9 +96,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, error }) => {
         <Link to="/forgot-password">¿Olvidaste la contraseña?</Link>
       </RememberRow>
 
+      <SmallText>
+        Al iniciar sesión, aceptas nuestros{' '}
+        <InlineLink onClick={onOpenTerms}>Términos de Servicio</InlineLink> y{' '}
+        <InlineLink onClick={onOpenPrivacy}>Política de Privacidad</InlineLink>.
+      </SmallText>
+
       <Button type="submit" gradient={true} disabled={loading}>
         {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
       </Button>
+
+      {/* ✅ Texto para crear cuenta */}
+      <BottomText>
+        ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
+      </BottomText>
     </FormWrapper>
   );
 };
