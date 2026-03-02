@@ -1,7 +1,9 @@
-// src/components/organisms/LoginFormSection.tsx
 import React, { useState } from 'react';
 import { styled } from '@linaria/react';
+import { useNavigate } from 'react-router-dom';
 import LoginForm from '../molecules/LoginForm';
+import apiService from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 interface LoginFormSectionProps {
   onOpenTerms: () => void;
@@ -49,12 +51,24 @@ const LoginFormSection: React.FC<LoginFormSectionProps> = ({
   onOpenPrivacy,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [error] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const { saveSession } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogin = async (email: string, password: string, remember: boolean) => {
+  const handleLogin = async (email: string, password: string) => {
     setLoading(true);
+    setError(null);
     try {
-      console.log('Login:', { email, password, remember });
+      const res = await apiService.login({ email, password });
+
+      if (res.success) {
+        saveSession(res.data.user, res.data.token);
+        navigate('/Dashboard');
+      } else {
+        setError(res.error?.message || 'Error al iniciar sesión');
+      }
+    } catch {
+      setError('Error de conexión con el servidor');
     } finally {
       setLoading(false);
     }

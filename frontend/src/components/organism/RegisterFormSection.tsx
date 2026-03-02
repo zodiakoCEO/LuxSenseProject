@@ -1,8 +1,9 @@
-// src/components/organisms/RegisterFormSection.tsx
 import React, { useState } from 'react';
 import { styled } from '@linaria/react';
+import { useNavigate } from 'react-router-dom';
 import Text from '../atoms/Text';
 import RegisterForm from '../molecules/RegisterForm';
+import apiService from '../../services/api';
 
 interface RegisterData {
   firstName: string;
@@ -53,12 +54,39 @@ const RegisterFormSection: React.FC<RegisterFormSectionProps> = ({
   onOpenPrivacy,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [error] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleRegister = async (data: RegisterData) => {
     setLoading(true);
+    setError(null);
+
+    if (data.password !== data.confirmPassword) {
+      setError('Las contraseñas no coinciden');
+      setLoading(false);
+      return;
+    }
+
+    if (!data.acceptTerms) {
+      setError('Debes aceptar los términos y condiciones');
+      setLoading(false);
+      return;
+    }
+
     try {
-      console.log('Registro:', data);
+      const res = await apiService.register({
+        email: data.email,
+        password: data.password,
+        nombre: `${data.firstName} ${data.lastName}`.trim()
+      });
+
+      if (res.success) {
+        navigate('/Login');
+      } else {
+        setError(res.error?.message || 'Error al crear la cuenta');
+      }
+    } catch {
+      setError('Error de conexión con el servidor');
     } finally {
       setLoading(false);
     }

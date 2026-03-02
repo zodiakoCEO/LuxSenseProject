@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { getMysqlPool, getMongoClient, getMongoDb } from './config/database.js';
 import { EventBus } from './integration/enventBus.js';
 
@@ -60,6 +61,10 @@ import { logger } from './shared/utils/logger.js';
 // ============================================
 
 export const app = express();
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 
 

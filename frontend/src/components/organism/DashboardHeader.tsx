@@ -3,6 +3,7 @@ import React from 'react';
 import SearchInput from '../atoms/SearchInput';
 import UserProfile from '../molecules/UserProfile';
 import Text from '../atoms/Text';
+import { useAuth } from '../../context/AuthContext';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -28,18 +29,18 @@ const CenterSection = styled.div`
 `;
 
 export const DashboardHeader: React.FC = () => {
+  const { user } = useAuth();
+
   return (
     <HeaderContainer>
       <LeftSection>
         <Text size="2rem" weight="bold">Dashboard</Text>
       </LeftSection>
-      
       <CenterSection>
         <SearchInput placeholder="Buscar" />
       </CenterSection>
-      
       <UserProfile 
-        name="Joe Lopez" 
+        name={user?.nombre || 'Usuario'} 
         avatarUrl="/assets/avatar.jpg" 
       />
     </HeaderContainer>

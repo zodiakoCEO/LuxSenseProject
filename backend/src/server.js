@@ -7,7 +7,7 @@ import { logger } from './shared/utils/logger.js';
 async function start() {
   try {
     const { app, sensorSocketManager } = await initializeApp();
-    const PORT = process.env.PORT || 5000;
+    const PORT = process.env.PORT || 5002;
 
     const server = http.createServer(app);
 

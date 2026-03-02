@@ -11,7 +11,7 @@ export interface UserProfile {
   role: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 class ApiService {
   private axiosInstance: AxiosInstance;
@@ -80,6 +80,15 @@ class ApiService {
       throw error;
     }
   }
+  async register(data: { email: string; password: string; nombre: string }) {
+  const response = await this.axiosInstance.post('/auth/register', data);
+  return response.data;
+}
+
+async login(data: { email: string; password: string }) {
+  const response = await this.axiosInstance.post('/auth/login', data);
+  return response.data;
+}
 }
 
 export default new ApiService();
