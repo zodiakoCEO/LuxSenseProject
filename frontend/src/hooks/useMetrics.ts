@@ -1,6 +1,6 @@
 // src/hooks/useMetrics.ts
 import { useState, useEffect } from 'react';
-import type { DeviceReading, Metric } from '../types/shared';
+import type { DeviceReading, Metric } from '../../../backend/src/types/index';
 import ApiService from '../services/api';
 
 interface UseMetricsReturn {

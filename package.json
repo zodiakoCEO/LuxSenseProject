@@ -1,22 +1,11 @@
 {
   "name": "luxsenseproject",
   "version": "1.0.0",
-  "description": "",
+  "description": "<<<<<<< HEAD\r 🌟 LuxSense - Frontend\r 📋 Descripción del Proyecto\r LuxSense es una aplicación web de monitoreo y control de consumo energético inteligente. El frontend está desarrollado con React, TypeScript, Vite y Linaria, siguiendo una arquitectura basada en Atomic Design para garantizar componentes reutilizables, escalables y mantenibles.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "install:all": "npm install",
-    "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:backend": "npm run dev --workspace=backend",
-    "build:frontend": "npm run build --workspace=frontend",
-    "build:backend": "npm run build --workspace=backend",
-    "build:all": "npm run build --workspace=frontend && npm run build --workspace=backend"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "workspaces":[
-    "frontend",
-    "backend",
-    "shared/types"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zodiakoCEO/LuxSenseProject.git"
@@ -24,12 +13,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/zodiakoCEO/LuxSenseProject/issues"
   },
-  "homepage": "https://github.com/zodiakoCEO/LuxSenseProject#readme",
-  "devDependencies": {
-    "typescript": "^5.0.0"
-  }
+  "homepage": "https://github.com/zodiakoCEO/LuxSenseProject#readme"
 }

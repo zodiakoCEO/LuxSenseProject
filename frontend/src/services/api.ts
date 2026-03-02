@@ -1,7 +1,7 @@
 // src/services/api.ts
 import axios from 'axios';
 import type { AxiosInstance } from 'axios';
-import type { DeviceReading } from '../types/shared';
+import type { DeviceReading } from '../../../backend/src/types/index';
 
 export interface UserProfile {
   id?: string;

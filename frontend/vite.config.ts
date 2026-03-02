@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     wyw({
-      include: ['**/*.{ts,tsx}'],
+      include: ['src/**/*.{ts,tsx}'],
       babelOptions: {
         presets: ['@babel/preset-typescript', '@babel/preset-react'],
       },
