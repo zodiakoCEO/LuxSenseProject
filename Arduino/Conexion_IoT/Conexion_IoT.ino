@@ -1,136 +1,218 @@
-/*
-  ESP32 + PIR HC-SR501 + Relé 8 Canales 12V
-  -----------------------------------------
-  Hardware:
-  - ESP32 (cualquier modelo compatible con Arduino IDE)
-  - Sensor PIR HC-SR501:
-      VCC -> 5V ESP32
-      GND -> GND ESP32
-      OUT -> GPIO12 (D12)
-  - Módulo Relé 8 canales 12V:
-      VCC -> 5V ESP32
-      GND -> GND ESP32
-      IN1 -> GPIO26 (D26)
-      Alimentación relés: 12V externa con GND común
-  - Carga (bombillo) conectada a NC/NO del relé
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
 
-  Funcionalidad:
-  - Detecta movimiento con PIR
-  - Activa relé para encender lámpara
-  - Mantiene lámpara encendida mientras hay movimiento
-  - Apaga cuando no detecta movimiento
-  - Monitor serial para debug
-*/
+// ==================== CONFIGURACIÓN WIFI ====================
+const char *WIFI_SSID = "CODEFIX";
+const char *WIFI_PASSWORD = "Nixesali91036@";
+
+// ==================== CONFIGURACIÓN BACKEND ====================
+const char *BACKEND_URL = "http://192.168.101.3:5002/api/ambientes/evento";
 
 // ==================== CONFIGURACIÓN DE PINES ====================
-#define PIR_PIN     12    // Sensor PIR HC-SR501 conectado a GPIO12
-#define RELAY_PIN   26    // Relé IN1 conectado a GPIO26
+#define PIR_PIN_1 12   // PIR Habitación principal
+#define RELAY_PIN_1 26 // Relé Habitación principal
 
-// ==================== CONFIGURACIÓN DE TIEMPOS ====================
-const unsigned long DEBOUNCE_TIME = 200;      // Tiempo antirrebote PIR (ms)
-const unsigned long RELAY_ON_TIME = 5000;     // Tiempo que permanece encendido el relé después del último movimiento (ms)
+#define PIR_PIN_2 14   // PIR Cocina
+#define RELAY_PIN_2 27 // Relé Cocina
 
-// ==================== VARIABLES GLOBALES ====================
-bool motionDetected = false;
-bool relayState = false;
-unsigned long lastMotionTime = 0;
-unsigned long lastDebounceTime = 0;
-int lastPirState = LOW;
+// ==================== CONFIGURACIÓN DE AMBIENTES ====================
+struct Ambiente
+{
+  const char *id;
+  const char *nombre;
+  int pirPin;
+  int relayPin;
+  bool motionDetected;
+  bool relayState;
+  unsigned long lastMotionTime;
+  unsigned long lastDebounceTime;
+  int lastPirState;
+};
+
+Ambiente ambientes[] = {
+    {"amb_001", "Habitación Principal", PIR_PIN_1, RELAY_PIN_1, false, false, 0, 0, LOW},
+    {"amb_002", "Cocina", PIR_PIN_2, RELAY_PIN_2, false, false, 0, 0, LOW}};
+
+const int NUM_AMBIENTES = 2;
+
+// ==================== TIEMPOS ====================
+const unsigned long DEBOUNCE_TIME = 200;
+const unsigned long RELAY_ON_TIME = 5000;
 
 // ==================== SETUP ====================
-void setup() {
-  // Inicializar comunicación serial
+void setup()
+{
   Serial.begin(115200);
   delay(1000);
-  Serial.println("\n\n=================================");
-  Serial.println("ESP32 + PIR + Relé Iniciado");
+  Serial.println("\n=================================");
+  Serial.println("LuxSense ESP32 Iniciando...");
   Serial.println("=================================");
-  
+
   // Configurar pines
-  pinMode(PIR_PIN, INPUT);
-  pinMode(RELAY_PIN, OUTPUT);
-  
-  // Estado inicial del relé (apagado)
-  // IMPORTANTE: La mayoría de módulos son ACTIVO BAJO (LOW = ON, HIGH = OFF)
-  digitalWrite(RELAY_PIN, HIGH);  // Relé apagado
-  relayState = false;
-  
-  Serial.println("Configuración completada:");
-  Serial.print("  - PIR en GPIO: ");
-  Serial.println(PIR_PIN);
-  Serial.print("  - Relé en GPIO: ");
-  Serial.println(RELAY_PIN);
-  Serial.println("Sistema listo. Esperando movimiento...\n");
+  for (int i = 0; i < NUM_AMBIENTES; i++)
+  {
+    pinMode(ambientes[i].pirPin, INPUT);
+    pinMode(ambientes[i].relayPin, OUTPUT);
+    digitalWrite(ambientes[i].relayPin, HIGH); // Apagado inicial
+  }
+
+  // Conectar WiFi
+  connectWiFi();
 }
 
 // ==================== LOOP PRINCIPAL ====================
-void loop() {
-  // Leer estado del sensor PIR
-  int pirReading = digitalRead(PIR_PIN);
-  
-  // ========== ANTIRREBOTE DEL PIR ==========
-  if (pirReading != lastPirState) {
-    lastDebounceTime = millis();
+void loop()
+{
+  // Verificar conexión WiFi
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.println("WiFi desconectado. Reconectando...");
+    connectWiFi();
   }
-  
-  if ((millis() - lastDebounceTime) > DEBOUNCE_TIME) {
-    // Si el estado es estable, procesarlo
-    if (pirReading == HIGH && !motionDetected) {
-      motionDetected = true;
-      lastMotionTime = millis();
-      
-      // Activar relé (encender lámpara)
-      if (!relayState) {
-        activateRelay();
-      }
-      
-      Serial.println("MOVIMIENTO DETECTADO!");
-      Serial.print("   Tiempo: ");
-      Serial.print(millis() / 1000);
-      Serial.println(" seg");
-    }
-    
-    if (pirReading == HIGH) {
-      // Actualizar tiempo mientras sigue detectando movimiento
-      lastMotionTime = millis();
-      motionDetected = true;
-    }
+
+  // Procesar cada ambiente
+  for (int i = 0; i < NUM_AMBIENTES; i++)
+  {
+    procesarAmbiente(i);
   }
-  
-  lastPirState = pirReading;
-  
-  // ========== CONTROL DEL RELÉ ==========
-  // Si hay movimiento reciente, mantener relé activo
-  if (motionDetected) {
-    unsigned long timeSinceMotion = millis() - lastMotionTime;
-    
-    if (timeSinceMotion > RELAY_ON_TIME) {
-      // Apagar relé si pasó el tiempo sin movimiento
-      if (relayState) {
-        deactivateRelay();
-      }
-      motionDetected = false;
-      Serial.println("⚪ Sin movimiento - Lámpara apagada");
-      Serial.println("-----------------------------------\n");
-    }
-  }
-  
-  // Pequeño delay para estabilidad
+
   delay(50);
 }
 
-// ==================== FUNCIONES AUXILIARES ====================
+// ==================== PROCESAR AMBIENTE ====================
+void procesarAmbiente(int idx)
+{
+  Ambiente &amb = ambientes[idx];
+  int pirReading = digitalRead(amb.pirPin);
 
-// Función para activar el relé (encender lámpara)
-void activateRelay() {
-  digitalWrite(RELAY_PIN, LOW);  // ACTIVO BAJO: LOW = encender relé
-  relayState = true;
-  Serial.println("RELÉ ACTIVADO - Lámpara encendida");
+  // Antirrebote
+  if (pirReading != amb.lastPirState)
+  {
+    amb.lastDebounceTime = millis();
+  }
+
+  if ((millis() - amb.lastDebounceTime) > DEBOUNCE_TIME)
+  {
+    if (pirReading == HIGH && !amb.motionDetected)
+    {
+      amb.motionDetected = true;
+      amb.lastMotionTime = millis();
+
+      if (!amb.relayState)
+      {
+        activarRele(idx);
+      }
+    }
+
+    if (pirReading == HIGH)
+    {
+      amb.lastMotionTime = millis();
+      amb.motionDetected = true;
+    }
+  }
+
+  amb.lastPirState = pirReading;
+
+  // Control tiempo sin movimiento
+  if (amb.motionDetected)
+  {
+    if ((millis() - amb.lastMotionTime) > RELAY_ON_TIME)
+    {
+      if (amb.relayState)
+      {
+        desactivarRele(idx);
+      }
+      amb.motionDetected = false;
+    }
+  }
 }
 
-// Función para desactivar el relé (apagar lámpara)
-void deactivateRelay() {
-  digitalWrite(RELAY_PIN, HIGH);  // ACTIVO BAJO: HIGH = apagar relé
-  relayState = false;
-  Serial.println(" RELÉ DESACTIVADO - Lámpara apagada");
+// ==================== ACTIVAR RELÉ ====================
+void activarRele(int idx)
+{
+  Ambiente &amb = ambientes[idx];
+  digitalWrite(amb.relayPin, LOW);
+  amb.relayState = true;
+
+  Serial.print("ENCENDIDO: ");
+  Serial.println(amb.nombre);
+
+  enviarEvento(amb.id, amb.nombre, "encendido");
+}
+
+// ==================== DESACTIVAR RELÉ ====================
+void desactivarRele(int idx)
+{
+  Ambiente &amb = ambientes[idx];
+  digitalWrite(amb.relayPin, HIGH);
+  amb.relayState = false;
+
+  Serial.print("APAGADO: ");
+  Serial.println(amb.nombre);
+
+  enviarEvento(amb.id, amb.nombre, "apagado");
+}
+
+// ==================== ENVIAR EVENTO AL BACKEND ====================
+void enviarEvento(const char *ambienteId, const char *nombre, const char *estado)
+{
+  if (WiFi.status() != WL_CONNECTED)
+    return;
+
+  HTTPClient http;
+  http.begin(BACKEND_URL);
+  http.addHeader("Content-Type", "application/json");
+
+  JsonDocument doc;
+  doc["ambiente_id"] = ambienteId;
+  doc["nombre"] = nombre;
+  doc["estado"] = estado;
+  doc["timestamp"] = millis();
+
+  String jsonBody;
+  serializeJson(doc, jsonBody);
+
+  int httpCode = http.POST(jsonBody);
+
+  if (httpCode == 200 || httpCode == 201)
+  {
+    Serial.print("Evento enviado al backend: ");
+    Serial.println(estado);
+  }
+  else
+  {
+    Serial.print("Error enviando evento: ");
+    Serial.println(httpCode);
+  }
+
+  http.end();
+}
+
+// ==================== CONECTAR WIFI ====================
+void connectWiFi()
+{
+  Serial.print("Conectando a WiFi: ");
+  Serial.println(WIFI_SSID);
+
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  int intentos = 0;
+  while (WiFi.status() != WL_CONNECTED && intentos < 20)
+  {
+    delay(500);
+    Serial.print(".");
+    intentos++;
+  }
+
+  if (WiFi.status() == WL_CONNECTED)
+  {
+    Serial.println("\nWiFi conectado!");
+    Serial.print("IP del ESP32: ");
+    Serial.println(WiFi.localIP());
+  }
+  else
+  {
+    Serial.println("\nNo se pudo conectar al WiFi");
+  }
 }

@@ -1,4 +1,3 @@
-// src/components/organisms/CTASection.tsx
 import React from 'react';
 import { styled } from '@linaria/react';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +6,7 @@ import Button from '../atoms/Button';
 const Container = styled.section`
   padding: 8rem 2rem;
   text-align: center;
-  background: radial-gradient(circle at center, rgba(0, 255, 9, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(0, 255, 9, 0.08) 0%, transparent 70%);
   max-width: 900px;
   margin: 0 auto;
 `;
@@ -19,6 +18,7 @@ const CTATitle = styled.h2`
   line-height: 1.2;
   margin: 0 0 1.5rem 0;
   color: #ffffff;
+  letter-spacing: -0.02em;
 
   span {
     background: linear-gradient(135deg, #00ff09, #00e5ff);
@@ -30,31 +30,22 @@ const CTATitle = styled.h2`
 
 const CTASubtitle = styled.p`
   font-family: 'Inter', sans-serif;
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
-  color: #9ca3af;
-  margin: 0 0 3rem 0;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: #64748b;
+  margin: 0 auto 3rem;
+  max-width: 500px;
+  line-height: 1.7;
 `;
 
 const ButtonsRow = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
 `;
 
 const CTASection: React.FC = () => {
   const navigate = useNavigate();
-
-  const handleGetStarted = () => {
-    navigate('/register');
-  };
-
-  const handleDemo = () => {
-    navigate('/login');
-  };
 
   return (
     <Container>
@@ -66,11 +57,8 @@ const CTASection: React.FC = () => {
         Sin contratos largos, sin letra pequeña.
       </CTASubtitle>
       <ButtonsRow>
-        <Button gradient onClick={handleGetStarted} size="large">
+        <Button gradient onClick={() => navigate('/register')}>
           Crear cuenta gratis
-        </Button>
-        <Button variant="secondary" onClick={handleDemo} size="large">
-          Ver demo
         </Button>
       </ButtonsRow>
     </Container>
