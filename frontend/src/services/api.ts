@@ -89,6 +89,23 @@ async login(data: { email: string; password: string }) {
   const response = await this.axiosInstance.post('/auth/login', data);
   return response.data;
 }
+// ── IA — ENERGÍA ──────────────────────────
+async getEnergyForecast() {
+  const response = await this.axiosInstance.get('/ai/energy/forecast');
+  return response.data;
+}
+
+// ── IA — ANOMALÍAS ─────────────────────────
+async getAnomalySummary() {
+  const response = await this.axiosInstance.get('/ai/anomalies/summary');
+  return response.data;
+}
+
+// ── IA — ILUMINACIÓN ───────────────────────
+async getLightingSchedule() {
+  const response = await this.axiosInstance.get('/ai/lighting/schedule');
+  return response.data;
+}
 }
 
 export default new ApiService();

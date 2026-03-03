@@ -2,6 +2,18 @@ import { styled } from '@linaria/react';
 import React from 'react';
 import InfoCard from '../molecules/InfoCard';
 
+interface AnomalySummary {
+  total_readings: number;
+  anomalies_detected: number;
+  anomaly_rate: number;
+  recent_anomalies: any[];
+}
+
+interface InfoCardsGridProps {
+  anomalySummary: AnomalySummary | null;
+  loading: boolean;
+}
+
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -9,28 +21,40 @@ const GridContainer = styled.div`
   margin-bottom: 2rem;
 `;
 
-export const InfoCardsGrid: React.FC = () => {
+export const InfoCardsGrid: React.FC<InfoCardsGridProps> = ({ anomalySummary, loading }) => {
   return (
     <GridContainer>
-      <InfoCard 
+      <InfoCard
         icon="🔔"
         title="Notificaciones"
         description="Tienes 5 notificaciones sin leer"
         accentColor="#00E5FF"
       />
-      <InfoCard 
+      <InfoCard
         icon="⚠️"
-        title="Alertas"
-        description="Tienes 2 alertas pendientes por solucionar"
+        title="Anomalías detectadas"
+        description={
+          loading
+            ? 'Cargando...'
+            : anomalySummary
+            ? `${anomalySummary.anomalies_detected} anomalías — ${anomalySummary.anomaly_rate}% de tasa`
+            : 'Sin datos'
+        }
         accentColor="#FF0000"
       />
-      <InfoCard 
+      <InfoCard
         icon="📊"
-        title="Reportes"
-        description="Reportar un problema"
+        title="Total lecturas"
+        description={
+          loading
+            ? 'Cargando...'
+            : anomalySummary
+            ? `${anomalySummary.total_readings} lecturas procesadas por IA`
+            : 'Sin datos'
+        }
         accentColor="#00FF09"
       />
-      <InfoCard 
+      <InfoCard
         icon="⬇️"
         title="Descargar"
         description="Descargar tu informe en PDF, DOCS..."

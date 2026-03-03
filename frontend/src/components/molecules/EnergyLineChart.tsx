@@ -2,27 +2,15 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { styled } from '@linaria/react';
 
-// Datos quemados para la presentación
-const mockData = [
-  { day: '1', currentMonth: 30, lastMonth: 35 },
-  { day: '2', currentMonth: 35, lastMonth: 40 },
-  { day: '3', currentMonth: 45, lastMonth: 50 },
-  { day: '4', currentMonth: 50, lastMonth: 60 },
-  { day: '5', currentMonth: 60, lastMonth: 55 },
-  { day: '6', currentMonth: 55, lastMonth: 50 },
-  { day: '7', currentMonth: 50, lastMonth: 45 },
-  { day: '8', currentMonth: 45, lastMonth: 35 },
-  { day: '9', currentMonth: 50, lastMonth: 40 },
-  { day: '10', currentMonth: 60, lastMonth: 50 },
-  { day: '11', currentMonth: 65, lastMonth: 55 },
-  { day: '12', currentMonth: 70, lastMonth: 60 },
-  { day: '13', currentMonth: 75, lastMonth: 65 },
-  { day: '14', currentMonth: 70, lastMonth: 60 },
-  { day: '15', currentMonth: 75, lastMonth: 70 },
-  { day: '16', currentMonth: 72, lastMonth: 68 },
-  { day: '17', currentMonth: 68, lastMonth: 65 },
-  { day: '18', currentMonth: 75, lastMonth: 25 }, // Punto destacado en el mockup
-];
+interface ForecastPoint {
+  hour: number;
+  consumption_kwh: number;
+}
+
+interface EnergyLineChartProps {
+  forecast?: ForecastPoint[];
+  loading?: boolean;
+}
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -53,88 +41,83 @@ const ChartSubtitle = styled.p`
   font-size: 0.9rem;
   color: #CCCCCC;
   margin: 0;
-  
   span {
     color: #AE00A2;
     font-weight: 600;
   }
 `;
 
-const EnergyLineChart: React.FC = () => {
+const LoadingText = styled.p`
+  font-family: 'Inter', sans-serif;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 5rem;
+`;
+
+const EnergyLineChart: React.FC<EnergyLineChartProps> = ({ forecast = [], loading = false }) => {
+  const chartData = forecast.map(f => ({
+    hour: `${f.hour}:00`,
+    prediccion: f.consumption_kwh
+  }));
+
+  const maxVal = forecast.length > 0
+    ? Math.max(...forecast.map(f => f.consumption_kwh))
+    : 150;
+
+  const avgVal = forecast.length > 0
+    ? (forecast.reduce((a, b) => a + b.consumption_kwh, 0) / forecast.length).toFixed(1)
+    : 0;
+
   return (
     <ChartContainer>
       <ChartHeader>
-        <ChartTitle>Consumo energético</ChartTitle>
+        <ChartTitle>Predicción de consumo energético — IA</ChartTitle>
         <ChartSubtitle>
-          Se ha presentado un consumo energético del <span>75%</span> de la meta este mes
+          Promedio diario: <span>{avgVal} kWh</span>
         </ChartSubtitle>
       </ChartHeader>
-      
-      <ResponsiveContainer width="100%" height="85%">
-        <LineChart data={mockData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <defs>
-            {/* Gradiente para la línea del mes actual */}
-            <linearGradient id="colorCurrentMonth" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#00FF09" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="#00FF09" stopOpacity={0.3}/>
-            </linearGradient>
-            
-            {/* Gradiente para la línea del mes pasado */}
-            <linearGradient id="colorLastMonth" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#AE00A2" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="#AE00A2" stopOpacity={0.3}/>
-            </linearGradient>
-          </defs>
-          
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
-          
-          <XAxis 
-            dataKey="day" 
-            stroke="#CCCCCC"
-            tick={{ fill: '#CCCCCC', fontSize: 12 }}
-          />
-          
-          <YAxis 
-            stroke="#CCCCCC"
-            tick={{ fill: '#CCCCCC', fontSize: 12 }}
-            label={{ value: '%', position: 'insideLeft', fill: '#CCCCCC' }}
-          />
-          
-          <Tooltip
-            contentStyle={{
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '8px',
-              color: '#FFFFFF'
-            }}
-          />
-          
-          <Legend 
-            wrapperStyle={{ color: '#CCCCCC' }}
-            iconType="line"
-          />
-          
-          <Line 
-            type="monotone" 
-            dataKey="currentMonth" 
-            stroke="#00FF09" 
-            strokeWidth={3}
-            dot={{ fill: '#00FF09', r: 4 }}
-            activeDot={{ r: 6, fill: '#00FF09' }}
-            name="Mes actual"
-          />
-          
-          <Line 
-            type="monotone" 
-            dataKey="lastMonth" 
-            stroke="#AE00A2" 
-            strokeWidth={3}
-            dot={{ fill: '#AE00A2', r: 4 }}
-            activeDot={{ r: 6, fill: '#AE00A2' }}
-            name="Mes pasado"
-          />
-        </LineChart>
-      </ResponsiveContainer>
+
+      {loading ? (
+        <LoadingText>Cargando predicciones de IA...</LoadingText>
+      ) : (
+        <ResponsiveContainer width="100%" height="85%">
+          <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+            <XAxis
+              dataKey="hour"
+              stroke="#CCCCCC"
+              tick={{ fill: '#CCCCCC', fontSize: 11 }}
+              interval={2}
+            />
+            <YAxis
+              stroke="#CCCCCC"
+              tick={{ fill: '#CCCCCC', fontSize: 12 }}
+              label={{ value: 'kWh', position: 'insideLeft', fill: '#CCCCCC' }}
+              domain={[0, Math.ceil(maxVal * 1.1)]}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '8px',
+                color: '#FFFFFF'
+              }}
+              formatter={(value: any) => [`${value} kWh`, 'Predicción IA']}
+            />
+            <Legend wrapperStyle={{ color: '#CCCCCC' }} iconType="line" />
+            <Line
+              type="monotone"
+              dataKey="prediccion"
+              stroke="#00FF09"
+              strokeWidth={3}
+              dot={{ fill: '#00FF09', r: 3 }}
+              activeDot={{ r: 6, fill: '#00FF09' }}
+              name="Predicción IA"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      )}
     </ChartContainer>
   );
 };

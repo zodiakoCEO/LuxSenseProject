@@ -38,6 +38,7 @@ import { AuthController } from './contexts/user-mangement/interface/controllers/
 
 import { createSensorRoutes } from './contexts/sensor-data/interfaces/routes/index.js';
 import { createAuthRoutes } from './contexts/user-mangement/interface/routes/index.js';
+import aiRoutes from './contexts/ai/routes.js';
 
 
 // ============================================
@@ -113,6 +114,7 @@ export async function initializeApp() {
         // 6️⃣ REGISTRAR RUTAS
         app.use('/api/sensors', createSensorRoutes(sensorController));
         app.use('/api/auth', createAuthRoutes(authController));
+        app.use('/api/ai', aiRoutes);
 
 
         // 7️⃣ HEALTH CHECK
