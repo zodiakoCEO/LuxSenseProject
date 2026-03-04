@@ -30,6 +30,10 @@ import { GetUserProfile } from './contexts/user-mangement/use-cases/GetUserProfi
 
 import { SensorController } from './contexts/sensor-data/interfaces/Controllers/SensorControllers.js';
 import { AuthController } from './contexts/user-mangement/interface/controllers/AuthController.js';
+import passport from 'passport';
+import session from 'express-session';
+import { initGoogleStrategy } from './contexts/user-mangement/infrastructure/passport/googleStrategy.js';
+import googleAuthRoutes from './contexts/user-mangement/interface/routes/googleAuthRoutes.js';
 
 
 // ============================================
@@ -67,6 +71,14 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use(session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+initGoogleStrategy();
 
 
 // ============================================
@@ -115,6 +127,7 @@ export async function initializeApp() {
         app.use('/api/sensors', createSensorRoutes(sensorController));
         app.use('/api/auth', createAuthRoutes(authController));
         app.use('/api/ai', aiRoutes);
+        app.use('/api/auth', googleAuthRoutes);
 
 
         // 7️⃣ HEALTH CHECK

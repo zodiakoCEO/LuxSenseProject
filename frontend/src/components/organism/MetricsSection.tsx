@@ -37,16 +37,18 @@ const MetricsSection: React.FC<MetricsSectionProps> = ({ lightingSchedule, loadi
   const current = lightingSchedule.find(l => l.hour === currentHour);
   const maxArtificial = 300;
 
-  const artificialPct = current
-    ? Math.round((current.optimal_artificial_light / maxArtificial) * 100)
-    : 0;
+const artificialPct = current
+  ? Math.min(100, Math.round((current.optimal_artificial_light / maxArtificial) * 100))
+  : 0;
+
+
 
   const naturalPct = current
     ? Math.round((current.natural_light_lux / 100) * 100)
     : 0;
 
   const savingPct = current
-    ? Math.round(((maxArtificial - current.optimal_artificial_light) / maxArtificial) * 100)
+    ? Math.max(0, Math.round(((maxArtificial - current.optimal_artificial_light) / maxArtificial) * 100))
     : 0;
 
   return (
