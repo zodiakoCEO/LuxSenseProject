@@ -2,6 +2,7 @@ import { styled } from '@linaria/react';
 import React from 'react';
 import Logo from '../atoms/Logo';
 import SidebarItem from '../molecules/SidebarItem';
+import { FaChartLine, FaHome, FaHistory, FaQuestionCircle, FaCog, FaSignOutAlt } from "react-icons/fa";
 
 const SidebarContainer = styled.aside`
   width: 260px;
@@ -50,16 +51,44 @@ export const Sidebar: React.FC = () => {
       </LogoSection>
       
       <NavSection>
-        <SidebarItem icon="📊" label="Dashboard" path="/dashboard" />
-        <SidebarItem icon="🏠" label="Ambientes" path="/ambientes" />
-        <SidebarItem icon="📜" label="Historial" path="/historial" />
-      </NavSection>
-      
-      <BottomSection>
-        <SidebarItem icon="❓" label="Ayuda" path="/ayuda" />
-        <SidebarItem icon="⚙️" label="Ajustes" path="/ajustes" />
-        <SidebarItem icon="🚪" label="Salir" path="/"/>
-      </BottomSection>
+  <SidebarItem 
+    icon={<FaChartLine />} 
+    label="Dashboard" 
+    path="/dashboard" 
+  />
+
+  <SidebarItem 
+    icon={<FaHome />} 
+    label="Ambientes" 
+    path="/ambientes" 
+  />
+
+  <SidebarItem 
+    icon={<FaHistory />} 
+    label="Historial" 
+    path="/historial" 
+  />
+</NavSection>
+
+<BottomSection>
+  <SidebarItem 
+    icon={<FaQuestionCircle />} 
+    label="Ayuda" 
+    path="/ayuda" 
+  />
+
+  <SidebarItem 
+    icon={<FaCog />} 
+    label="Ajustes" 
+    path="/ajustes" 
+  />
+
+  <SidebarItem 
+    icon={<FaSignOutAlt />} 
+    label="Salir" 
+    path="/" 
+  />
+</BottomSection>
     </SidebarContainer>
   );
 };

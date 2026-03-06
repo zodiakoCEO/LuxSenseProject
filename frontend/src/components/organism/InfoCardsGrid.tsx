@@ -1,6 +1,7 @@
 import { styled } from '@linaria/react';
 import React from 'react';
 import InfoCard from '../molecules/InfoCard';
+import { FaBell, FaExclamationTriangle, FaChartBar, FaDownload } from 'react-icons/fa';
 
 interface AnomalySummary {
   total_readings: number;
@@ -25,13 +26,13 @@ export const InfoCardsGrid: React.FC<InfoCardsGridProps> = ({ anomalySummary, lo
   return (
     <GridContainer>
       <InfoCard
-        icon="🔔"
+        icon={<FaBell />}
         title="Notificaciones"
         description="Tienes 5 notificaciones sin leer"
         accentColor="#00E5FF"
       />
       <InfoCard
-        icon="⚠️"
+        icon={<FaExclamationTriangle />}
         title="Anomalías detectadas"
         description={
           loading
@@ -40,10 +41,10 @@ export const InfoCardsGrid: React.FC<InfoCardsGridProps> = ({ anomalySummary, lo
             ? `${anomalySummary.anomalies_detected} anomalías — ${anomalySummary.anomaly_rate}% de tasa`
             : 'Sin datos'
         }
-        accentColor="#FF0000"
+        accentColor="#eeff00"
       />
       <InfoCard
-        icon="📊"
+        icon={<FaChartBar />}
         title="Total lecturas"
         description={
           loading
@@ -55,7 +56,7 @@ export const InfoCardsGrid: React.FC<InfoCardsGridProps> = ({ anomalySummary, lo
         accentColor="#00FF09"
       />
       <InfoCard
-        icon="⬇️"
+        icon={<FaDownload />}
         title="Descargar"
         description="Descargar tu informe en PDF, DOCS..."
         accentColor="#00E5FF"
