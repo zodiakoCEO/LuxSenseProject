@@ -83,4 +83,25 @@ export class AIController {
             next(error);
         }
     }
+    // ── AMBIENTES ─────────────────────────────
+async getAmbientes(req, res, next) {
+    try {
+        const response = await fetch(`${AI_SERVICE_URL}/ai/energy/ambientes`);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        next(error);
+    }
+}
+
+async getAmbienteDetail(req, res, next) {
+    try {
+        const { id } = req.params;
+        const response = await fetch(`${AI_SERVICE_URL}/ai/energy/ambientes/${id}`);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        next(error);
+    }
+}
 }

@@ -1,5 +1,5 @@
 // src/components/organisms/HeroSection.tsx
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { styled } from '@linaria/react';
 import { useNavigate } from 'react-router-dom';
 import Text from '../atoms/Text';

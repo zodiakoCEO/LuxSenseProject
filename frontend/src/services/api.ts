@@ -33,7 +33,7 @@ class ApiService {
     });
   }
 
-  // ✅ Usa /sensors como prefijo (donde está registrado el router)
+  // Usa /sensors como prefijo (donde está registrado el router)
   async getDeviceReadings(deviceId: string): Promise<DeviceReading[]> {
     try {
       const response = await this.axiosInstance.get(
@@ -46,7 +46,7 @@ class ApiService {
     }
   }
 
-  // ✅ Usa /sensors como prefijo
+  //  Usa /sensors como prefijo
   async getDeviceStats(deviceId: string): Promise<DeviceReading[]> {
     try {
       const response = await this.axiosInstance.get(
@@ -59,7 +59,7 @@ class ApiService {
     }
   }
 
-  // ✅ Usa /sensors como prefijo
+  // Usa /sensors como prefijo
   async postDeviceReading(data: DeviceReading): Promise<{ success: boolean; message: string }> {
     try {
       const response = await this.axiosInstance.post('/sensors/device/readings', data);
@@ -70,7 +70,7 @@ class ApiService {
     }
   }
 
-  // ✅ Usa /auth como prefijo (donde está registrado)
+  // Usa /auth como prefijo (donde está registrado)
   async getUserProfile(): Promise<UserProfile> {
     try {
       const response = await this.axiosInstance.get('/auth/profile');
@@ -106,6 +106,32 @@ async getLightingSchedule() {
   const response = await this.axiosInstance.get('/ai/lighting/schedule');
   return response.data;
 }
+// ── IA — AMBIENTES ─────────────────────────
+async getAmbientes() {
+  const response = await this.axiosInstance.get('/ai/ambientes');
+  return response.data;
+}
+
+async getAmbienteDetail(id: string) {
+  const response = await this.axiosInstance.get(`/ai/ambientes/${id}`);
+  return response.data;
+}
+// ── AMBIENTES MONGODB ──────────────────────────
+async crearAmbiente(data: { nombre: string; icono: string; sensor_id?: string }) {
+  const response = await this.axiosInstance.post('/ambientes', data);
+  return response.data;
+}
+
+async getMisAmbientes() {
+  const response = await this.axiosInstance.get('/ambientes');
+  return response.data;
+}
+
+async eliminarAmbiente(id: string) {
+  const response = await this.axiosInstance.delete(`/ambientes/${id}`);
+  return response.data;
+}
+
 }
 
 export default new ApiService();

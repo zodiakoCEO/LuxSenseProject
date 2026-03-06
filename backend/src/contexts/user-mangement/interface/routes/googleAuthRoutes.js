@@ -31,7 +31,7 @@ router.get('/google/callback',
                 `http://localhost:5173/auth/callback?token=${token}&name=${encodeURIComponent(user.nombre)}&email=${encodeURIComponent(user.email)}`
             );
         } catch (error) {
-            console.error('❌ Error generando token Google:', error.message);
+            console.error(' Error generando token Google:', error.message);
             console.error('Usuario recibido:', JSON.stringify(req.user));
             res.redirect('http://localhost:5173/Login?error=token_failed');
         }

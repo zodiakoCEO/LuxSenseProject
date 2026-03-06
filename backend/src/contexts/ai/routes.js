@@ -31,5 +31,13 @@ router.get('/lighting/schedule', authGuard, (req, res, next) =>
 router.get('/lighting/optimize', authGuard, (req, res, next) =>
     aiController.optimizeLighting(req, res, next)
 );
+// ── AMBIENTES ─────────────────────────────────
+router.get('/ambientes', authGuard, (req, res, next) =>
+    aiController.getAmbientes(req, res, next)
+);
+
+router.get('/ambientes/:id', authGuard, (req, res, next) =>
+    aiController.getAmbienteDetail(req, res, next)
+);
 
 export default router;
