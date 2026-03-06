@@ -13,6 +13,9 @@ export function createAuthRoutes(authController) {
     router.get('/profile', authGuard, (req, res, next) => 
     authController.getProfile(req, res, next)
   );
+    router.put('/profile', authGuard, (req, res, next) =>
+    authController.updateProfile(req, res, next)
+    );
 
     return router;
 }

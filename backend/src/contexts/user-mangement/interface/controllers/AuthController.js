@@ -1,4 +1,5 @@
 import { ValidationError } from '../../../../shared/errors/AppError.js'
+import { getMysqlPool } from '../../../../config/database.js';
 
 export class AuthController {
     constructor(createUser, authenticateUser, getUserProfile) {
@@ -60,5 +61,33 @@ export class AuthController {
         next(error);
         }
     }
+    async updateProfile(req, res, next) {
+    try {
+        const { id_usuario } = req.user;
+        const { nombre, email, avatar_url } = req.body;
+
+        const pool = await getMysqlPool();
+
+        const fields = [];
+        const values = [];
+
+        if (nombre) { fields.push('nombre = ?'); values.push(nombre); }
+        if (email)  { fields.push('email = ?');  values.push(email); }
+        if (avatar_url !== undefined) { fields.push('avatar_url = ?'); values.push(avatar_url); }
+
+        if (fields.length === 0) {
+            return res.status(400).json({ success: false, error: { message: 'No hay campos para actualizar' } });
+        }
+
+        values.push(id_usuario);
+        await pool.execute(`UPDATE usuarios SET ${fields.join(', ')} WHERE id_usuario = ?`, values);
+
+        const [rows] = await pool.execute('SELECT * FROM usuarios WHERE id_usuario = ?', [id_usuario]);
+
+        res.json({ success: true, data: rows[0] });
+    } catch (error) {
+        next(error);
+    }
+}
 }
 

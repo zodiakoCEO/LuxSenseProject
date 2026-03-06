@@ -1,9 +1,10 @@
 import { styled } from '@linaria/react';
-import React from 'react';
+import React, { useState } from 'react';
 import SearchInput from '../atoms/SearchInput';
 import UserProfile from '../molecules/UserProfile';
 import Text from '../atoms/Text';
 import { useAuth } from '../../context/AuthContext';
+import ProfileModal from '../organism/ProfileModal';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -30,20 +31,28 @@ const CenterSection = styled.div`
 
 export const DashboardHeader: React.FC = () => {
   const { user } = useAuth();
+  const [showProfile, setShowProfile] = useState(false);
 
   return (
-    <HeaderContainer>
-      <LeftSection>
-        <Text size="2rem" weight="bold">Dashboard</Text>
-      </LeftSection>
-      <CenterSection>
-        <SearchInput placeholder="Buscar" />
-      </CenterSection>
-      <UserProfile 
-        name={user?.nombre || 'Usuario'} 
-        avatarUrl="/assets/avatar.jpg" 
-      />
-    </HeaderContainer>
+    <>
+      <HeaderContainer>
+        <LeftSection>
+          <Text size="2rem" weight="bold">Dashboard</Text>
+        </LeftSection>
+        <CenterSection>
+          <SearchInput placeholder="Buscar" />
+        </CenterSection>
+        <UserProfile
+          name={user?.nombre || 'Usuario'}
+          avatarUrl={user?.avatar_url || ''}
+          onClick={() => setShowProfile(true)}
+        />
+      </HeaderContainer>
+
+      {showProfile && (
+        <ProfileModal onClose={() => setShowProfile(false)} />
+      )}
+    </>
   );
 };
 

@@ -6,6 +6,7 @@ import Text from '../atoms/Text';
 interface UserProfileProps {
   name: string;
   avatarUrl: string;
+  onClick?: () => void;
 }
 
 const ProfileContainer = styled.div`
@@ -14,15 +15,12 @@ const ProfileContainer = styled.div`
   gap: 0.75rem;
   cursor: pointer;
   transition: opacity 0.2s;
-  
-  &:hover {
-    opacity: 0.8;
-  }
+  &:hover { opacity: 0.8; }
 `;
 
-export const UserProfile: React.FC<UserProfileProps> = ({ name, avatarUrl }) => {
+export const UserProfile: React.FC<UserProfileProps> = ({ name, avatarUrl, onClick }) => {
   return (
-    <ProfileContainer>
+    <ProfileContainer onClick={onClick}>
       <Text size="0.95rem" weight="medium">{name}</Text>
       <Avatar src={avatarUrl} alt={name} />
     </ProfileContainer>

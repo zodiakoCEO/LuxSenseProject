@@ -131,7 +131,10 @@ async eliminarAmbiente(id: string) {
   const response = await this.axiosInstance.delete(`/ambientes/${id}`);
   return response.data;
 }
-
+async updateProfile(data: { nombre?: string; email?: string; avatar_url?: string }) {
+  const response = await this.axiosInstance.put('/auth/profile', data);
+  return response.data;
+}
 }
 
 export default new ApiService();

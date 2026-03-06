@@ -6,6 +6,7 @@ interface AuthUser {
   email: string;
   nombre: string;
   id_rol: number;
+  avatar_url?: string;
 }
 
 interface AuthContextType {
@@ -23,7 +24,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const saved = localStorage.getItem('user');
     return saved ? JSON.parse(saved) : null;
   });
-
   const [token, setToken] = useState<string | null>(
     localStorage.getItem('token')
   );
