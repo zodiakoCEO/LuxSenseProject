@@ -3,6 +3,8 @@ import React from 'react';
 import Logo from '../atoms/Logo';
 import SidebarItem from '../molecules/SidebarItem';
 import { FaChartLine, FaHome, FaHistory, FaQuestionCircle, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { useSettings } from '../../context/SettingsContext';
+import { useHelp } from '../../context/HelpContext';
 
 const SidebarContainer = styled.aside`
   width: 260px;
@@ -43,6 +45,8 @@ const BottomSection = styled.div`
 `;
 
 export const Sidebar: React.FC = () => {
+  const { openSettings } = useSettings();
+  const { openHelp } = useHelp();
 
   return (
     <SidebarContainer>
@@ -74,13 +78,13 @@ export const Sidebar: React.FC = () => {
   <SidebarItem 
     icon={<FaQuestionCircle />} 
     label="Ayuda" 
-    path="/ayuda" 
+    onClick={openHelp}
   />
 
   <SidebarItem 
     icon={<FaCog />} 
     label="Ajustes" 
-    path="/ajustes" 
+    onClick={openSettings} 
   />
 
   <SidebarItem 

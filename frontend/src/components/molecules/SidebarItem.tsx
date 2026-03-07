@@ -7,6 +7,7 @@ interface SidebarItemProps {
   icon: string;
   label: string;
   path: string;
+  onClick?: () => void
 }
 
 const ItemContainer = styled.div<{ isActive: boolean }>`
@@ -30,13 +31,17 @@ const IconWrapper = styled.span<{ isActive: boolean }>`
   color: ${props => props.isActive ? '#00E5FF' : '#CCCCCC'};
 `;
 
-export const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label, path }) => {
+export const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label, path, onClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isActive = location.pathname === path;
   
   const handleClick = () => {
-    navigate(path);
+    if (onClick) {
+      onClick();
+    } else if (path) {
+      navigate(path)
+    }
   };
   
   return (
