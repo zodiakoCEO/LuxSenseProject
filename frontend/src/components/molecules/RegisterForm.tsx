@@ -68,6 +68,33 @@ const SmallText = styled.p`
   color: #9ca3af;
 `;
 
+const ButtonsRow = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4rem;
+
+  button {
+    font-size: 1.1rem !important;
+    padding: 1rem 2.5rem !important;
+    min-height: 56px !important;
+    min-width: 180px !important;
+    border-radius: 12px !important;
+  }
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+
+    button {
+      width: 100%;
+    }
+  }
+`;
+
 const RegisterForm: React.FC<RegisterFormProps> = ({
   onSubmit,
   loading,
@@ -180,10 +207,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           onChange={setAcceptTips}
         />
       </Checkboxes>
-
-      <Button type="submit" gradient disabled={loading || !acceptTerms}>
-        {loading ? 'Creando cuenta...' : 'Crear cuenta Gratis'}
-      </Button>
+      
+      <ButtonsRow>
+        <Button type="submit" gradient disabled={loading || !acceptTerms}>
+          {loading ? 'Creando cuenta...' : 'Crear cuenta Gratis'}
+        </Button>
+      </ButtonsRow>
 
       <BottomText>
         ¿Ya tienes una cuenta? <Link to="/login">Iniciar sesión</Link>

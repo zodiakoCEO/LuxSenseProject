@@ -92,8 +92,31 @@ const ContactSection = styled.div`
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 `;
 
-const ContactButton = styled(Button)`
-  margin: 0.5rem;
+const ButtonsRow = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4rem;
+
+  button {
+    font-size: 1.1rem !important;
+    padding: 1rem 2.5rem !important;
+    min-height: 56px !important;
+    min-width: 180px !important;
+    border-radius: 12px !important;
+  }
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+
+    button {
+      width: 100%;
+    }
+  }
 `;
 
 const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
@@ -155,15 +178,17 @@ const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
             ¿No encontraste lo que buscabas?
           </h3>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <ContactButton gradient>
-              Chat en vivo
-            </ContactButton>
-            <ContactButton variant="secondary">
-              WhatsApp
-            </ContactButton>
-            <ContactButton variant="secondary">
-              Llamar
-            </ContactButton>
+            <ButtonsRow>
+              <Button variant="primary" size="large">
+                Chat en vivo
+              </Button>
+              <Button variant="secondary" size="medium">
+                WhatsApp
+              </Button>
+              <Button variant="outline" size="medium">
+                Llamar
+              </Button>
+            </ButtonsRow>
           </div>
         </ContactSection>
       </ModalContentStyled>

@@ -2,7 +2,6 @@
 import React from 'react';
 import { styled } from '@linaria/react';
 import { useNavigate } from 'react-router-dom';
-import Text from '../atoms/Text';
 import Button from '../atoms/Button';
 
 // ==================== ESTILOS ====================
@@ -193,11 +192,11 @@ const HeroSection: React.FC = () => {
       </HeroSubtitle>
 
       <ButtonsRow>
-        <Button gradient size="large" onClick={() => navigate('/login')}>
+        <Button variant="primary" size="large" onClick={() => navigate('/login')}>
           Ver Demo Gratis
         </Button>
-        <Button variant="outline" size="large" onClick={() => window.open('https://wa.me/573xxxxxxxxx', '_blank')}>
-          Contáctanos →
+        <Button variant="secondary" size="large" onClick={() => window.open('https://wa.me/573xxxxxxxxx', '_blank')}>
+          Contáctanos
         </Button>
       </ButtonsRow>
 

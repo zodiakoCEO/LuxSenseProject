@@ -51,9 +51,28 @@ const SettingLabel = styled.label`
 const ButtonsRow = styled.div`
   display: flex;
   gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4rem;
+
+  button {
+    font-size: 1.1rem !important;
+    padding: 1rem 2.5rem !important;
+    min-height: 56px !important;
+    min-width: 180px !important;
+    border-radius: 12px !important;
+  }
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+
+    button {
+      width: 100%;
+    }
+  }
 `;
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
@@ -138,13 +157,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
         </Section>
 
         <ButtonsRow>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" size="medium" onClick={onClose}>
             Cancelar
           </Button>
-          <Button gradient onClick={handleSave}>
+          <Button variant="primary" size="medium" onClick={handleSave}>
             Guardar cambios
           </Button>
-        </ButtonsRow>
+        </ButtonsRow> 
       </ModalContentStyled>
     </Modal>
   );

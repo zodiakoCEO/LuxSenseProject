@@ -40,8 +40,28 @@ const CTASubtitle = styled.p`
 const ButtonsRow = styled.div`
   display: flex;
   gap: 1rem;
-  justify-content: center;
   flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4rem;
+
+  button {
+    font-size: 1.1rem !important;
+    padding: 1rem 2.5rem !important;
+    min-height: 56px !important;
+    min-width: 180px !important;
+    border-radius: 12px !important;
+  }
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+
+    button {
+      width: 100%;
+    }
+  }
 `;
 
 const CTASection: React.FC = () => {
@@ -57,7 +77,7 @@ const CTASection: React.FC = () => {
         Sin contratos largos, sin letra pequeña.
       </CTASubtitle>
       <ButtonsRow>
-        <Button gradient onClick={() => navigate('/register')}>
+        <Button variant='primary' size='large' onClick={() => navigate('/register')}>
           Crear cuenta gratis
         </Button>
       </ButtonsRow>

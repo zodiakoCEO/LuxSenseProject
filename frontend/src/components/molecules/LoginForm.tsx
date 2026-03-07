@@ -50,6 +50,33 @@ const BottomText = styled.p`
   color: #9ca3af;
 `;
 
+const ButtonsRow = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4rem;
+
+  button {
+    font-size: 1.1rem !important;
+    padding: 1rem 2.5rem !important;
+    min-height: 56px !important;
+    min-width: 180px !important;
+    border-radius: 12px !important;
+  }
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+
+    button {
+      width: 100%;
+    }
+  }
+`;
+
 const LoginForm: React.FC<LoginFormProps> = ({
   onSubmit,
   loading,
@@ -102,11 +129,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <InlineLink onClick={onOpenPrivacy}>Política de Privacidad</InlineLink>.
       </SmallText>
 
-      <Button type="submit" gradient={true} disabled={loading}>
-        {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-      </Button>
+      <ButtonsRow>
+        <Button type="submit" gradient={true} disabled={loading}>
+          {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+        </Button>
+      </ButtonsRow>
 
-      {/* ✅ Texto para crear cuenta */}
       <BottomText>
         ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
       </BottomText>
