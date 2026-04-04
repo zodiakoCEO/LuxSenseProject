@@ -6,6 +6,7 @@ import LoginPage from "./components/pages/LoginPage";
 import RegisterPage from "./components/pages/RegisterPage";
 import AuthCallbackPage from './components/pages/AuthCallbackPage';
 import AmbientesPage from './components/pages/AmbientesPage';
+import DemoDashboardPage from './components/pages/DemoDashboardPage';
 import { useAuth } from "./context/AuthContext";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -31,6 +32,7 @@ const App: React.FC = () => {
             <AmbientesPage />
           </PrivateRoute>
         } />
+        <Route path="/demo" element={<DemoDashboardPage />} />
       </Routes>
     </Router>
   );

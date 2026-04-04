@@ -184,7 +184,7 @@ const HeroSection: React.FC = () => {
       </HeroSubtitle>
 
       <ButtonsRow>
-        <Button variant="primary" size="large" onClick={() => navigate('/login')}>
+        <Button variant="primary" size="large" onClick={() => navigate('/demo')}>
           Ver Demo Gratis
         </Button>
         <Button variant="secondary" size="large" onClick={() => window.open('https://wa.me/573xxxxxxxxx', '_blank')}>
