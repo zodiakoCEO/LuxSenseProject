@@ -8,6 +8,7 @@ import TestimonialsSection from '../organism/TestimonialsSection';
 import CTASection from '../organism/CTASection';
 import FooterSection from '../organism/FooterSection';
 import LandingNavbar from '../organism/LandingNavbar';
+import FaqSection from '../organism/FaqSection';
 
 const Page = styled.div`
   min-height: 100vh;
@@ -47,7 +48,7 @@ const LandingTemplate: React.FC = () => {
         </SectionWrapper>
 
         <SectionWrapper id="faq">
-          {/* Aquí podrías tener tu sección de FAQ / acordeones */}
+          <FaqSection />
           <CTASection />
         </SectionWrapper>
 
