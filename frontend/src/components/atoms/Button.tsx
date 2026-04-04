@@ -4,16 +4,34 @@ import { styled } from '@linaria/react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline';
-  gradient?: boolean;
+  gradient?: boolean; 
   size?: 'small' | 'medium' | 'large';
   fullWidth?: boolean;
 }
 
 const getSizeStyles = (size: 'small' | 'medium' | 'large' = 'medium') => {
   const sizes = {
-    small: { fontSize: '0.875rem', padding: '0.625rem 1.25rem', minHeight: '36px', minWidth: '100px' },
-    medium: { fontSize: '1rem', padding: '0.875rem 1.75rem', minHeight: '44px', minWidth: '140px' },
-    large: { fontSize: '1.125rem', padding: '1rem 2.5rem', minHeight: '56px', minWidth: '180px' },
+   
+    small: {
+      fontSize: '0.95rem',
+      padding: '0.8rem 1.8rem',
+      minHeight: '44px',
+      minWidth: '140px',
+    },
+  
+    medium: {
+      fontSize: '1rem',
+      padding: '0.9rem 2.1rem',
+      minHeight: '50px',
+      minWidth: '160px',
+    },
+  
+    large: {
+      fontSize: '1.1rem',
+      padding: '1rem 2.5rem',
+      minHeight: '56px',
+      minWidth: '180px',
+    },
   };
   return sizes[size];
 };
@@ -30,27 +48,28 @@ const BaseButton = styled.button<{
   transition: all 0.25s ease;
   border: none;
   box-sizing: border-box;
-  
-  ${({ size }) => {
-    const s = getSizeStyles(size);
-    return `
-      font-size: ${s.fontSize};
-      padding: ${s.padding};
-      min-height: ${s.minHeight};
-      min-width: ${s.minWidth};
-    `;
-  }}
-  
+
+  font-size: ${props => getSizeStyles(props.size ?? 'medium').fontSize};
+  padding: ${props => getSizeStyles(props.size ?? 'medium').padding};
+  min-height: ${props => getSizeStyles(props.size ?? 'medium').minHeight};
+  min-width: ${props => getSizeStyles(props.size ?? 'medium').minWidth};
+
   ${({ fullWidth }) => fullWidth && 'width: 100%;'}
-  
+
+  &:focus-visible {
+    outline: 2px solid #00ff09;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(0, 255, 9, 0.4);
+  }
+
   &:hover:not(:disabled) {
     transform: translateY(-2px);
   }
-  
+
   &:active:not(:disabled) {
     transform: translateY(0);
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -98,16 +117,46 @@ const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
   size = 'medium',
   fullWidth = false,
+  type = 'button',
   children,
   ...rest
 }) => {
   if (variant === 'secondary') {
-    return <ButtonSecondary size={size} fullWidth={fullWidth} {...rest}>{children}</ButtonSecondary>;
+    return (
+      <ButtonSecondary
+        size={size}
+        fullWidth={fullWidth}
+        type={type}
+        {...rest}
+      >
+        {children}
+      </ButtonSecondary>
+    );
   }
+
   if (variant === 'outline') {
-    return <ButtonOutline size={size} fullWidth={fullWidth} {...rest}>{children}</ButtonOutline>;
+    return (
+      <ButtonOutline
+        size={size}
+        fullWidth={fullWidth}
+        type={type}
+        {...rest}
+      >
+        {children}
+      </ButtonOutline>
+    );
   }
-  return <ButtonPrimary size={size} fullWidth={fullWidth} {...rest}>{children}</ButtonPrimary>;
+
+  return (
+    <ButtonPrimary
+      size={size}
+      fullWidth={fullWidth}
+      type={type}
+      {...rest}
+    >
+      {children}
+    </ButtonPrimary>
+  );
 };
 
 export default Button;
