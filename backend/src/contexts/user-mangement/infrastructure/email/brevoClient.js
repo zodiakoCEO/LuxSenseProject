@@ -1,10 +1,12 @@
-// infra/email/brevoClient.js
-const { BrevoClient } = require('@getbrevo/brevo');
+import brevo from '@getbrevo/brevo';
 
-const brevo = new BrevoClient({
-  apiKey: process.env.BREVO_API_KEY,
-  timeoutInSeconds: 60,
-  maxRetries: 2,
-});
+export function createTransactionalApi() {
+  const api = new brevo.TransactionalEmailsApi();
+  api.setApiKey(
+    brevo.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.BREVO_API_KEY
+  );
+  return api;
+}
 
-module.exports = { brevo };
+export { brevo };

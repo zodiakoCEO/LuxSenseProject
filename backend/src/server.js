@@ -13,26 +13,32 @@ async function start() {
 
     sensorSocketManager.initialize(server);
 
-    server.listen(PORT, () => {
-      logger.success(`Server running on http://localhost:${PORT}`);
-      logger.info(`WebSocket ready at ws://localhost:${PORT}`);
+    server.listen(PORT, '0.0.0.0', () => {
+      logger.success(`Server running on port ${PORT}`);
+      logger.info(`Healthcheck available at /health`);
     });
 
-    process.on('SIGINT', async () => {
-      logger.warn('Shutting down gracefully...');
-      await closeConnections();
-      server.close();
-      process.exit(0);
-    });
+    const shutdown = async (signal) => {
+      logger.warn(`Received ${signal}, shutting down gracefully...`);
+      try {
+        await closeConnections();
+        server.close(() => process.exit(0));
+      } catch (error) {
+        logger.error('Error during shutdown', error.message);
+        process.exit(1);
+      }
+    };
+
+    process.on('SIGINT', () => shutdown('SIGINT'));
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
   } catch (error) {
     console.error('=== FULL ERROR ===');
     console.error(error);
-    console.error('Stack:', error.stack);
-    console.error('Message:', error.message);
-    logger.error('Server startup failed', error.message);
+    console.error('Stack:', error?.stack);
+    console.error('Message:', error?.message);
+    logger.error('Server startup failed', error?.message || 'Unknown error');
     process.exit(1);
-}
-
+  }
 }
 
 start();
