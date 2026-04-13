@@ -42,10 +42,9 @@ import { logger }              from './shared/utils/logger.js';
 export const app = express();
 
 // ── CORS ────────────────────────────────────────────────────────────────────
-// Dominios permitidos: Vercel (producción) + localhost (desarrollo)
 const allowedOrigins = [
-  process.env.FRONTEND_URL_WWW,  // p.ej. https://luxsense-dun.vercel.app
-  'http://localhost:5173'
+  process.env.FRONTEND_URL_WWW,   // p.ej. https://luxsense-dun.vercel.app
+  'http://localhost:5173',
 ].filter(Boolean);
 
 logger.info('Allowed CORS origins:', allowedOrigins);
@@ -55,17 +54,23 @@ app.use(cors({
     // Permitir peticiones sin origin (curl, Postman, health checks, etc.)
     if (!origin) return callback(null, true);
 
+    // Si está en la lista exacta, OK
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
 
+    // (Opcional) permitir cualquier subdominio *.vercel.app en desarrollo
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+
+    logger.error(`CORS blocked for origin: ${origin}`);
     return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-
 
 // ── Body parsers ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
