@@ -20,6 +20,7 @@ import { GetUserProfile }    from './contexts/user-mangement/use-cases/GetUserPr
 import { VerifyEmail }       from './contexts/user-mangement/use-cases/VerifyEmail.js';
 import { ForgotPassword }    from './contexts/user-mangement/use-cases/ForgotPassword.js';
 import { ResetPassword }     from './contexts/user-mangement/use-cases/ResetPassword.js';
+import { UpdateUserProfile } from './contexts/user-mangement/use-cases/UpdateUserProfile.js';
 
 import { SensorController }  from './contexts/sensor-data/interfaces/Controllers/SensorControllers.js';
 import { AuthController }    from './contexts/user-mangement/interface/controllers/AuthController.js';
@@ -38,26 +39,33 @@ import aiRoutes                 from './contexts/ai/routes.js';
 import { SensorSocketManager } from './contexts/sensor-data/interfaces/ws/sensorSocket.js';
 import { logger }              from './shared/utils/logger.js';
 
-import { UpdateUserProfile } from './contexts/user-mangement/use-cases/UpdateUserProfile.js';
-
-
 export const app = express();
 
 // ── CORS ────────────────────────────────────────────────────────────────────
+// Dominios permitidos: Vercel (producción) + localhost (desarrollo)
 const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.FRONTEND_URL_WWW,
+  process.env.FRONTEND_URL_WWW,  // p.ej. https://luxsense-dun.vercel.app
   'http://localhost:5173'
 ].filter(Boolean);
 
+logger.info('Allowed CORS origins:', allowedOrigins);
+
 app.use(cors({
-  origin: (origin, callback) => {
+  origin(origin, callback) {
+    // Permitir peticiones sin origin (curl, Postman, health checks, etc.)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
     return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
 
 // ── Body parsers ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
@@ -69,7 +77,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure:   process.env.NODE_ENV === 'production',
+    secure:   process.env.NODE_ENV === 'production',              // en Railway: true
     httpOnly: true,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
   }
@@ -107,12 +115,12 @@ export async function initializeApp() {
     const tokenService = new TokenService();
     const emailService = new BrevoEmailService();
 
-    const createUser       = new CreateUser(userRepo, eventBus, emailService);
-    const authenticateUser = new AuthenticateUser(userRepo, tokenService);
-    const getUserProfile   = new GetUserProfile(userRepo);
-    const verifyEmail      = new VerifyEmail(userRepo);
-    const forgotPassword   = new ForgotPassword(userRepo, emailService);
-    const resetPassword    = new ResetPassword(userRepo);
+    const createUser        = new CreateUser(userRepo, eventBus, emailService);
+    const authenticateUser  = new AuthenticateUser(userRepo, tokenService);
+    const getUserProfile    = new GetUserProfile(userRepo);
+    const verifyEmail       = new VerifyEmail(userRepo);
+    const forgotPassword    = new ForgotPassword(userRepo, emailService);
+    const resetPassword     = new ResetPassword(userRepo);
     const updateUserProfile = new UpdateUserProfile(userRepo);
 
     const authController = new AuthController(
@@ -124,14 +132,13 @@ export async function initializeApp() {
       resetPassword,
       updateUserProfile
     );
-// ...
 
     // ── Routes ────────────────────────────────────────────────────────────────
-    app.use('/api/sensors',    createSensorRoutes(sensorController));
-    app.use('/api/auth',       createAuthRoutes(authController));
-    app.use('/api/auth',       googleAuthRoutes);
-    app.use('/api/ai',         aiRoutes);
-    app.use('/api/ambientes',  createAmbienteRoutes(mongoDb));
+    app.use('/api/sensors',   createSensorRoutes(sensorController));
+    app.use('/api/auth',      createAuthRoutes(authController));
+    app.use('/api/auth',      googleAuthRoutes);
+    app.use('/api/ai',        aiRoutes);
+    app.use('/api/ambientes', createAmbienteRoutes(mongoDb));
 
     // ── Health check ──────────────────────────────────────────────────────────
     app.get('/health', (_req, res) => {
