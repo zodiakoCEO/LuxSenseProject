@@ -1,8 +1,7 @@
-import { brevo, createTransactionalApi } from './brevoClient.js';
+import { sendBrevoEmail } from './brevoClient.js';
 
 export class BrevoEmailService {
   constructor() {
-    this.api = createTransactionalApi();
     this.sender = {
       name:  process.env.BREVO_SENDER_NAME  || 'LuxSense',
       email: process.env.BREVO_SENDER_EMAIL || 'no-reply@luxsense.online'
@@ -14,33 +13,32 @@ export class BrevoEmailService {
   }
 
   async #send({ to, subject, html }) {
-    const mail = new brevo.SendSmtpEmail();
-    mail.sender      = this.sender;
-    mail.replyTo     = this.replyTo;
-    mail.to          = [to];
-    mail.subject     = subject;
-    mail.htmlContent = html;
     try {
-      return await this.api.sendTransacEmail(mail);
+      return await sendBrevoEmail({
+        sender:      this.sender,
+        replyTo:     this.replyTo,
+        to:          [to],
+        subject,
+        htmlContent: html
+      });
     } catch (err) {
-      const msg = err?.response?.text || err?.message || 'Error Brevo';
-      throw new Error(`Brevo: ${msg}`);
+      throw new Error(`Brevo: ${err.message}`);
     }
   }
 
   sendWelcomeVerification(user, verificationUrl) {
     return this.#send({
-      to: { email: user.email, name: user.nombre || '' },
+      to:      { email: user.email, name: user.nombre || '' },
       subject: '¡Bienvenido a LuxSense! Verifica tu correo',
-      html: verificationHtml(user.nombre, verificationUrl)
+      html:    verificationHtml(user.nombre, verificationUrl)
     });
   }
 
   sendPasswordReset(user, resetUrl) {
     return this.#send({
-      to: { email: user.email, name: user.nombre || '' },
+      to:      { email: user.email, name: user.nombre || '' },
       subject: 'Recuperación de contraseña — LuxSense',
-      html: resetHtml(user.nombre, resetUrl)
+      html:    resetHtml(user.nombre, resetUrl)
     });
   }
 }
