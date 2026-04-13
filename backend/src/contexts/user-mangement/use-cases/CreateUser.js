@@ -13,9 +13,9 @@ export class CreateUser {
     const existing = await this.userRepository.findByEmail(email);
     if (existing) throw new ValidationError('El usuario ya existe');
 
-    const password_hash       = await bcrypt.hash(password, 10);
-    const verificationToken   = crypto.randomBytes(32).toString('hex');
-    const tokenExpires        = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+    const password_hash     = await bcrypt.hash(password, 10);
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const tokenExpires      = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
 
     const user = await this.userRepository.create(
       email, password_hash, nombre, 2, verificationToken, tokenExpires

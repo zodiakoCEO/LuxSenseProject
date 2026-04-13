@@ -1,4 +1,4 @@
-import brevo from '@getbrevo/brevo';
+import * as brevo from '@getbrevo/brevo';
 
 export function createTransactionalApi() {
   const api = new brevo.TransactionalEmailsApi();
