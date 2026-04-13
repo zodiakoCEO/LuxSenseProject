@@ -1,4 +1,6 @@
-import * as brevo from '@getbrevo/brevo';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const brevo = require('@getbrevo/brevo');
 
 export function createTransactionalApi() {
   const api = new brevo.TransactionalEmailsApi();
