@@ -1,35 +1,36 @@
-import bcrypt from 'bcrypt'
-import { AuthenticationError } from '../../../shared/errors/AppError.js'
+import bcrypt from 'bcrypt';
+import { AuthenticationError } from '../../../shared/errors/AppError.js';
 
 export class AuthenticateUser {
-    constructor (userRepository, tokenService) {
-        this.userRepository = userRepository,
-        this.tokenService = tokenService
+  constructor(userRepository, tokenService) {
+    this.userRepository = userRepository;
+    this.tokenService   = tokenService;
+  }
+
+  async execute(email, password) {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) throw new AuthenticationError('Credenciales inválidas');
+
+    // Cuentas Google no tienen contraseña local
+    if (user.password_hash === 'GOOGLE_OAUTH') {
+      throw new AuthenticationError('Esta cuenta usa Google para iniciar sesión');
     }
 
-    async execute(email, password) {
-        const user = await this.userRepository.findByEmail(email);
-        if (!user) {
-            throw new AuthenticationError('Usuario no encontrado');
-        }
+    const valid = await bcrypt.compare(password, user.password_hash);
+    if (!valid) throw new AuthenticationError('Credenciales inválidas');
 
-        const isPasswordValid = await bcrypt.compare(
-            password,
-            user.password_hash
-        )
-        if (!isPasswordValid) {
-            throw new AuthenticationError('Clave invalida')
-        }
-
-        const token = this.tokenService.sign({
-            id_usuario: user.id_usuario,
-            email: user.email,
-            id_rol: user.id_rol
-        })
-
-        return {
-            token,
-            user: user.toJSON()
-        }
+    if (!user.email_verified) {
+      throw new AuthenticationError(
+        'Debes verificar tu correo antes de iniciar sesión'
+      );
     }
+
+    const token = this.tokenService.sign({
+      id_usuario: user.id_usuario,
+      email:      user.email,
+      id_rol:     user.id_rol
+    });
+
+    return { token, user: user.toJSON() };
+  }
 }
