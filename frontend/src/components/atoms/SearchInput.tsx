@@ -1,5 +1,6 @@
 import { styled } from '@linaria/react';
 import React from 'react';
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 interface SearchInputProps {
   placeholder?: string;
@@ -11,6 +12,28 @@ const InputWrapper = styled.div`
   position: relative;
   width: 100%;
   max-width: 440px;
+`;
+
+const IconWrapper = styled.div`
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5f5;
+  font-size: 0.75rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  ${InputWrapper}:focus-within & {
+    border-color: #00e5ff;
+    background-color: rgba(15, 23, 42, 0.9);
+  }
 `;
 
 const StyledInput = styled.input`
@@ -34,19 +57,12 @@ const StyledInput = styled.input`
   }
 `;
 
-const SearchIcon = styled.span`
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #CCCCCC;
-  font-size: 1.2rem;
-`;
-
 export const SearchInput: React.FC<SearchInputProps> = ({ placeholder = "Buscar", value, onChange }) => {
   return (
     <InputWrapper>
-      <SearchIcon>🔍</SearchIcon>
+      <IconWrapper>
+        <FaMagnifyingGlass />
+      </IconWrapper>
       <StyledInput 
         type="text" 
         placeholder={placeholder}
