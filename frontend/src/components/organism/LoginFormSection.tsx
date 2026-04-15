@@ -90,6 +90,12 @@ const GoogleButton = styled.button`
   &:active {
     transform: translateY(0);
   }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
 `;
 
 const GoogleIcon = () => (
@@ -100,6 +106,16 @@ const GoogleIcon = () => (
     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
   </svg>
 );
+
+// ── Helper: construye la URL base del backend desde VITE_API_URL ──────────
+function getBackendBaseUrl(): string {
+  const apiUrl = import.meta.env.VITE_API_URL as string | undefined;
+  if (apiUrl) {
+    // VITE_API_URL = "https://backend.railway.app/api"  →  base = "https://backend.railway.app"
+    return apiUrl.replace(/\/api\/?$/, '');
+  }
+  return 'http://localhost:5002';
+}
 
 const LoginFormSection: React.FC<LoginFormSectionProps> = ({
   onOpenTerms,
@@ -129,7 +145,8 @@ const LoginFormSection: React.FC<LoginFormSectionProps> = ({
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5002/api/auth/google';
+    const base = getBackendBaseUrl();
+    window.location.href = `${base}/api/auth/google`;
   };
 
   return (
@@ -139,7 +156,7 @@ const LoginFormSection: React.FC<LoginFormSectionProps> = ({
         <Subtitle>Accede a tu dashboard de control de iluminación inteligente.</Subtitle>
       </div>
 
-      <GoogleButton onClick={handleGoogleLogin}>
+      <GoogleButton onClick={handleGoogleLogin} disabled={loading}>
         <GoogleIcon />
         Continuar con Google
       </GoogleButton>

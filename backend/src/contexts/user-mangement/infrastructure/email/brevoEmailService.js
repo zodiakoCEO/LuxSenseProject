@@ -60,7 +60,7 @@ function verificationHtml(nombre, url) {
   </td></tr>
   <tr><td style="padding:36px 40px">
     <h2 style="margin:0 0 14px;color:#f1f5f9;font-size:20px;font-weight:600">
-      ¡Bienvenido, ${nombre}! 👋</h2>
+      ¡Bienvenido, ${nombre}! </h2>
     <p style="margin:0 0 20px;color:#94a3b8;font-size:14px;line-height:1.6">
       Tu cuenta fue creada. Para activarla verifica tu correo.
       El enlace expira en <strong style="color:#c4b5fd">24 horas</strong>.
@@ -120,7 +120,7 @@ function resetHtml(nombre, url) {
       O copia: <a href="${url}" style="color:#fca5a5;word-break:break-all">${url}</a>
     </p>
     <p style="margin:0;color:#ef4444;font-size:12px;font-weight:500">
-      ⚠️ Si no lo solicitaste, ignora este correo.
+      Si no lo solicitaste, ignora este correo.
     </p>
   </td></tr>
   <tr><td style="padding:20px 40px;border-top:1px solid #2d2d2d;text-align:center">

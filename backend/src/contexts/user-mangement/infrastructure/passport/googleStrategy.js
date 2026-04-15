@@ -9,27 +9,42 @@ export function initGoogleStrategy() {
     callbackURL:  process.env.GOOGLE_CALLBACK_URL,
   }, async (accessToken, refreshToken, profile, done) => {
     try {
-      const pool = await getMysqlPool();
-      const email = profile.emails[0].value;
+      const pool  = await getMysqlPool();
+      const email = profile.emails?.[0]?.value;
 
-      const [rows] = await pool.execute(
-        'SELECT * FROM usuarios WHERE email = ?', [email]);
+      if (!email) return done(new Error('No se pudo obtener el email de Google'), null);
+
+      // 1. Buscar usuario existente
+      const [rows] = await pool.query(
+        'SELECT * FROM usuarios WHERE email = ?', [email]
+      );
 
       if (rows.length) return done(null, rows[0]);
 
-      // Usuario nuevo — Google ya verificó el email
-      const [result] = await pool.execute(
-        `INSERT INTO usuarios
-           (email, nombre, password_hash, id_rol, email_verified)
-         VALUES (?, ?, 'GOOGLE_OAUTH', 2, TRUE)`,
+      // 2. Usuario nuevo — insertar sin email_verified (usa DEFAULT 0)
+      //    Luego actualizamos email_verified=1 en query separada
+      const [result] = await pool.query(
+        `INSERT INTO usuarios (email, nombre, password_hash, id_rol)
+         VALUES (?, ?, 'GOOGLE_OAUTH', 2)`,
         [email, profile.displayName]
       );
 
-      const [newUser] = await pool.execute(
-        'SELECT * FROM usuarios WHERE id_usuario = ?', [result.insertId]);
+      // 3. Marcar email como verificado (Google ya lo verificó)
+      await pool.query(
+        'UPDATE usuarios SET email_verified = 1 WHERE id_usuario = ?',
+        [result.insertId]
+      );
+
+      // 4. Obtener usuario completo
+      const [newUser] = await pool.query(
+        'SELECT * FROM usuarios WHERE id_usuario = ?',
+        [result.insertId]
+      );
 
       return done(null, newUser[0]);
+
     } catch (err) {
+      console.error('[GoogleStrategy] Error:', err.message);
       return done(err, null);
     }
   }));
@@ -39,8 +54,9 @@ export function initGoogleStrategy() {
   passport.deserializeUser(async (id, done) => {
     try {
       const pool = await getMysqlPool();
-      const [rows] = await pool.execute(
-        'SELECT * FROM usuarios WHERE id_usuario = ?', [id]);
+      const [rows] = await pool.query(
+        'SELECT * FROM usuarios WHERE id_usuario = ?', [id]
+      );
       done(null, rows[0] || null);
     } catch (err) {
       done(err, null);

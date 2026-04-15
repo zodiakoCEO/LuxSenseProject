@@ -6,11 +6,22 @@ import type { Ambiente } from '../../hooks/useAmbientes';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import apiService from '../../services/api';
 
+// ==================== KEYFRAMES ====================
+
+
+
 // ==================== ESTILOS ====================
 
 const PageHeader = styled.div`
   margin-bottom: 2rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
 `;
+
+const PageTitleGroup = styled.div``;
 
 const PageTitle = styled.h1`
   font-family: 'Inter', sans-serif;
@@ -28,6 +39,37 @@ const PageSubtitle = styled.p`
   margin: 0;
 `;
 
+const LiveBadge = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 255, 9, 0.06);
+  border: 1px solid rgba(0, 255, 9, 0.2);
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #00ff09;
+  white-space: nowrap;
+  align-self: center;
+`;
+
+const LiveDot = styled.span`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ff09;
+  animation: pulseRing 2s infinite;
+  animation-name: pulseRing;
+
+  @keyframes pulseRing {
+    0%   { box-shadow: 0 0 0 0 rgba(0, 255, 9, 0.5); }
+    70%  { box-shadow: 0 0 0 6px rgba(0, 255, 9, 0);  }
+    100% { box-shadow: 0 0 0 0 rgba(0, 255, 9, 0);   }
+  }
+`;
+
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -40,7 +82,7 @@ const Card = styled.div<{ estado?: string; activo?: boolean }>`
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid ${({ estado, activo }) =>
     !activo ? 'rgba(255,255,255,0.06)' :
-    estado === 'elevado' ? 'rgba(255,59,59,0.3)' :
+    estado === 'elevado'  ? 'rgba(255,59,59,0.3)' :
     estado === 'moderado' ? 'rgba(255,190,0,0.3)' :
     'rgba(0,255,9,0.2)'};
   border-radius: 20px;
@@ -57,7 +99,7 @@ const Card = styled.div<{ estado?: string; activo?: boolean }>`
     height: 2px;
     background: ${({ estado, activo }) =>
       !activo ? 'transparent' :
-      estado === 'elevado' ? 'linear-gradient(90deg, #ff3b3b, transparent)' :
+      estado === 'elevado'  ? 'linear-gradient(90deg, #ff3b3b, transparent)' :
       estado === 'moderado' ? 'linear-gradient(90deg, #ffbe00, transparent)' :
       'linear-gradient(90deg, #00ff09, transparent)'};
   }
@@ -93,6 +135,13 @@ const IconWrapper = styled.div<{ activo?: boolean }>`
   align-items: center;
   justify-content: center;
   font-size: 1.3rem;
+  transition: all 0.4s ease;
+  animation: ${({ activo }) => activo ? 'iconPulse 2s ease-in-out infinite' : 'none'};
+
+  @keyframes iconPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 9, 0.4); }
+    50%       { box-shadow: 0 0 0 8px rgba(0, 255, 9, 0); }
+  }
 `;
 
 const CardTitle = styled.h3`
@@ -101,6 +150,12 @@ const CardTitle = styled.h3`
   font-weight: 700;
   color: #ffffff;
   margin: 0;
+`;
+
+const CardActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const StatusBadge = styled.span<{ activo?: boolean }>`
@@ -112,6 +167,45 @@ const StatusBadge = styled.span<{ activo?: boolean }>`
   background: ${({ activo }) => activo ? 'rgba(0,255,9,0.1)' : 'rgba(255,255,255,0.06)'};
   color: ${({ activo }) => activo ? '#00ff09' : '#475569'};
   border: 1px solid ${({ activo }) => activo ? 'rgba(0,255,9,0.2)' : 'rgba(255,255,255,0.08)'};
+`;
+
+const DeleteBtn = styled.button`
+  background: transparent;
+  border: none;
+  color: #475569;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  line-height: 1;
+
+  &:hover {
+    background: rgba(255, 59, 59, 0.1);
+    color: #ff3b3b;
+  }
+`;
+
+const SensorChip = styled.div<{ linked?: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: ${({ linked }) => linked ? '#00e5ff' : '#475569'};
+  background: ${({ linked }) => linked ? 'rgba(0,229,255,0.06)' : 'rgba(255,255,255,0.04)'};
+  border: 1px solid ${({ linked }) => linked ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.06)'};
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  margin-bottom: 0.75rem;
+`;
+
+const UltimaActividad = styled.p`
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  color: #475569;
+  margin: 0 0 0.75rem 0;
 `;
 
 const ConsumoRow = styled.div`
@@ -159,7 +253,7 @@ const EficienciaFill = styled.div<{ pct: number; estado?: string }>`
   width: ${({ pct }) => Math.max(0, Math.min(100, pct))}%;
   border-radius: 999px;
   background: ${({ estado }) =>
-    estado === 'elevado' ? '#ff3b3b' :
+    estado === 'elevado'  ? '#ff3b3b' :
     estado === 'moderado' ? '#ffbe00' :
     '#00ff09'};
   transition: width 0.5s ease;
@@ -199,6 +293,54 @@ const PrediccionValue = styled.span`
   font-weight: 700;
   color: #00e5ff;
 `;
+
+// ── Toast de evento en tiempo real ────────────────────────────────────────────
+const EventToast = styled.div<{ activo: boolean }>`
+  position: fixed;
+  bottom: 5rem;
+  right: 2rem;
+  z-index: 200;
+  background: ${({ activo }) => activo ? 'rgba(0,20,5,0.95)' : 'rgba(20,0,0,0.95)'};
+  border: 1px solid ${({ activo }) => activo ? 'rgba(0,255,9,0.3)' : 'rgba(255,59,59,0.3)'};
+  border-radius: 14px;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #ffffff;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  animation: slideInToast 0.3s ease;
+  max-width: 280px;
+
+  @keyframes slideInToast {
+    from { transform: translateX(110%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+`;
+
+const ToastIcon = styled.span`
+  font-size: 1.3rem;
+`;
+
+const ToastText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+`;
+
+const ToastTitle = styled.span`
+  font-weight: 700;
+  font-size: 0.85rem;
+`;
+
+const ToastSub = styled.span<{ activo: boolean }>`
+  font-size: 0.75rem;
+  color: ${({ activo }) => activo ? '#00ff09' : '#ff6b6b'};
+`;
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
 
 const Overlay = styled.div`
   position: fixed;
@@ -334,10 +476,7 @@ const FormInput = styled.input`
   color: #ffffff;
   outline: none;
   transition: border-color 0.2s;
-
-  &:focus {
-    border-color: rgba(0,255,9,0.4);
-  }
+  &:focus { border-color: rgba(0,255,9,0.4); }
 `;
 
 const IconGrid = styled.div`
@@ -354,11 +493,7 @@ const IconOption = styled.button<{ selected?: boolean }>`
   font-size: 1.25rem;
   cursor: pointer;
   transition: all 0.2s;
-
-  &:hover {
-    background: rgba(0,255,9,0.1);
-    border-color: rgba(0,255,9,0.3);
-  }
+  &:hover { background: rgba(0,255,9,0.1); border-color: rgba(0,255,9,0.3); }
 `;
 
 const SaveButton = styled.button`
@@ -374,32 +509,58 @@ const SaveButton = styled.button`
   cursor: pointer;
   margin-top: 1rem;
   transition: all 0.25s;
-
-  &:hover {
-    box-shadow: 0 0 25px rgba(0,255,9,0.4);
-    transform: translateY(-2px);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
+  &:hover { box-shadow: 0 0 25px rgba(0,255,9,0.4); transform: translateY(-2px); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 `;
+
+// ==================== HELPERS ====================
+
+function formatUltimaActividad(fecha: string | null): string {
+  if (!fecha) return 'Sin actividad reciente';
+  const diff = Date.now() - new Date(fecha).getTime();
+  const mins  = Math.floor(diff / 60000);
+  const horas = Math.floor(diff / 3600000);
+  if (mins < 1)   return 'Hace un momento';
+  if (mins < 60)  return `Hace ${mins} min`;
+  if (horas < 24) return `Hace ${horas}h`;
+  return `Hace ${Math.floor(horas / 24)}d`;
+}
 
 // ==================== CARD ====================
 
-const AmbienteCard: React.FC<{ ambiente: Ambiente; onClick: () => void }> = ({ ambiente, onClick }) => (
+const AmbienteCard: React.FC<{
+  ambiente: Ambiente;
+  onClick: () => void;
+  onDelete: (e: React.MouseEvent) => void;
+}> = ({ ambiente, onClick, onDelete }) => (
   <Card estado={ambiente.estado} activo={ambiente.activo} onClick={onClick}>
     <CardHeader>
       <CardLeft>
         <IconWrapper activo={ambiente.activo}>{ambiente.icono}</IconWrapper>
         <CardTitle>{ambiente.nombre}</CardTitle>
       </CardLeft>
-      <StatusBadge activo={ambiente.activo}>
-        {ambiente.activo ? '● Activo' : '○ Inactivo'}
-      </StatusBadge>
+      <CardActions>
+        <StatusBadge activo={ambiente.activo}>
+          {ambiente.activo ? '● Activo' : '○ Inactivo'}
+        </StatusBadge>
+        <DeleteBtn
+          title="Eliminar ambiente"
+          onClick={onDelete}
+        >
+          ✕
+        </DeleteBtn>
+      </CardActions>
     </CardHeader>
+
+    {/* Sensor vinculado */}
+    <SensorChip linked={!!ambiente.sensor_id}>
+      {ambiente.sensor_id ? `📡 ${ambiente.sensor_id}` : '⚠ Sin sensor vinculado'}
+    </SensorChip>
+
+    {/* Última actividad */}
+    <UltimaActividad>
+      🕐 {formatUltimaActividad(ambiente.ultima_actividad)}
+    </UltimaActividad>
 
     <ConsumoRow>
       <ConsumoValue>{ambiente.consumo_actual.toFixed(1)}</ConsumoValue>
@@ -419,19 +580,25 @@ const AmbienteCard: React.FC<{ ambiente: Ambiente; onClick: () => void }> = ({ a
       <span>{Math.max(0, Number(ambiente.eficiencia.toFixed(1)))}%</span>
     </EficienciaLabel>
 
-    <MiniChart>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={ambiente.historial}>
-          <Line
-            type="monotone"
-            dataKey="kwh"
-            stroke={ambiente.estado === 'elevado' ? '#ff3b3b' : ambiente.estado === 'moderado' ? '#ffbe00' : '#00ff09'}
-            strokeWidth={2}
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </MiniChart>
+    {ambiente.historial.length > 0 && (
+      <MiniChart>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={ambiente.historial}>
+            <Line
+              type="monotone"
+              dataKey="kwh"
+              stroke={
+                ambiente.estado === 'elevado'  ? '#ff3b3b' :
+                ambiente.estado === 'moderado' ? '#ffbe00' :
+                '#00ff09'
+              }
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </MiniChart>
+    )}
 
     <PrediccionRow>
       <PrediccionLabel>Predicción IA próxima hora</PrediccionLabel>
@@ -477,7 +644,7 @@ const AmbienteDetailModal: React.FC<{ ambiente: Ambiente; onClose: () => void }>
             </div>
 
             <SectionLabel>Recomendaciones IA</SectionLabel>
-            {detail?.recomendaciones.map((rec, i) => (
+            {(detail?.recomendaciones || []).map((rec, i) => (
               <RecomendacionItem key={i}>
                 <span>💡</span>
                 {rec}
@@ -501,14 +668,23 @@ const AmbienteDetailModal: React.FC<{ ambiente: Ambiente; onClose: () => void }>
 const ICONOS = ['💡', '🛏️', '🍳', '🛋️', '🚿', '💼', '🚗', '🏠', '📺', '🖥️', '🎮', '🌿'];
 
 const AmbientesPage: React.FC = () => {
-  const { ambientes, loading, error } = useAmbientes();
+  const {
+    ambientes,
+    loading,
+    error,
+    lastEvent,
+    refreshAmbientes,
+    eliminarAmbiente
+  } = useAmbientes();
+
   const [selectedAmbiente, setSelectedAmbiente] = useState<Ambiente | null>(null);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [nombre, setNombre] = useState('');
-  const [icono, setIcono] = useState('💡');
-  const [sensorId, setSensorId] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [successMsg, setSuccessMsg] = useState('');
+  const [showAddModal, setShowAddModal]           = useState(false);
+  const [nombre, setNombre]                       = useState('');
+  const [icono, setIcono]                         = useState('💡');
+  const [sensorId, setSensorId]                   = useState('');
+  const [saving, setSaving]                       = useState(false);
+  const [successMsg, setSuccessMsg]               = useState('');
+  const [deletingId, setDeletingId]               = useState<string | null>(null);
 
   const handleCrear = async () => {
     if (!nombre.trim()) return;
@@ -520,29 +696,48 @@ const AmbientesPage: React.FC = () => {
       setNombre('');
       setIcono('💡');
       setSensorId('');
+      await refreshAmbientes(); // ← recarga la lista real desde MongoDB
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch {
-      // error silencioso
+      setSuccessMsg('❌ Error creando ambiente');
+      setTimeout(() => setSuccessMsg(''), 3000);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!confirm('¿Eliminar este ambiente?')) return;
+    setDeletingId(id);
+    try {
+      await eliminarAmbiente(id);
+    } finally {
+      setDeletingId(null);
     }
   };
 
   return (
     <DashboardLayout>
       <PageHeader>
-        <PageTitle>Ambientes</PageTitle>
-        <PageSubtitle>Monitoreo energético por espacio — datos en tiempo real con IA</PageSubtitle>
+        <PageTitleGroup>
+          <PageTitle>Ambientes</PageTitle>
+          <PageSubtitle>Monitoreo energético por espacio — datos en tiempo real con IA</PageSubtitle>
+        </PageTitleGroup>
+        <LiveBadge>
+          <LiveDot />
+          En vivo · WebSocket
+        </LiveBadge>
       </PageHeader>
 
       {successMsg && (
         <div style={{
-          background: 'rgba(0,255,9,0.1)',
-          border: '1px solid rgba(0,255,9,0.3)',
+          background: successMsg.startsWith('✅') ? 'rgba(0,255,9,0.1)' : 'rgba(255,59,59,0.1)',
+          border: `1px solid ${successMsg.startsWith('✅') ? 'rgba(0,255,9,0.3)' : 'rgba(255,59,59,0.3)'}`,
           borderRadius: '10px',
           padding: '0.75rem 1rem',
           marginBottom: '1.5rem',
-          color: '#00ff09',
+          color: successMsg.startsWith('✅') ? '#00ff09' : '#ff6b6b',
           fontFamily: 'Inter, sans-serif',
           fontSize: '0.9rem'
         }}>
@@ -551,18 +746,40 @@ const AmbientesPage: React.FC = () => {
       )}
 
       {loading && <LoadingText>Cargando ambientes...</LoadingText>}
-      {error && <LoadingText>{error}</LoadingText>}
+      {error   && <LoadingText>{error}</LoadingText>}
 
       {!loading && !error && (
         <Grid>
           {ambientes.map(amb => (
             <AmbienteCard
               key={amb.id}
-              ambiente={amb}
-              onClick={() => setSelectedAmbiente(amb)}
+              ambiente={{ ...amb }}
+              onClick={() => deletingId !== amb.id && setSelectedAmbiente(amb)}
+              onDelete={(e) => handleDelete(e, amb.id)}
             />
           ))}
         </Grid>
+      )}
+
+      {!loading && !error && ambientes.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '4rem 0', color: '#475569', fontFamily: 'Inter, sans-serif' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🏠</div>
+          <p style={{ fontSize: '1.1rem', fontWeight: 600, color: '#64748b' }}>No tienes ambientes aún</p>
+          <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Crea tu primer ambiente con el botón +</p>
+        </div>
+      )}
+
+      {/* Toast tiempo real */}
+      {lastEvent && (
+        <EventToast activo={lastEvent.activo}>
+          <ToastIcon>{lastEvent.icono}</ToastIcon>
+          <ToastText>
+            <ToastTitle>{lastEvent.nombre}</ToastTitle>
+            <ToastSub activo={lastEvent.activo}>
+              {lastEvent.activo ? '● Encendido por movimiento' : '○ Apagado por inactividad'}
+            </ToastSub>
+          </ToastText>
+        </EventToast>
       )}
 
       {/* Botón flotante + */}
@@ -590,11 +807,7 @@ const AmbientesPage: React.FC = () => {
               <FormLabel>Ícono</FormLabel>
               <IconGrid>
                 {ICONOS.map(ic => (
-                  <IconOption
-                    key={ic}
-                    selected={icono === ic}
-                    onClick={() => setIcono(ic)}
-                  >
+                  <IconOption key={ic} selected={icono === ic} onClick={() => setIcono(ic)}>
                     {ic}
                   </IconOption>
                 ))}
@@ -602,9 +815,9 @@ const AmbientesPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <FormLabel>ID del sensor (opcional)</FormLabel>
+              <FormLabel>ID del sensor ESP32</FormLabel>
               <FormInput
-                placeholder="Ej: amb_001, sensor-esp32-01..."
+                placeholder="Ej: esp32_001, esp32_002..."
                 value={sensorId}
                 onChange={e => setSensorId(e.target.value)}
               />
