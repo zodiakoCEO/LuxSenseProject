@@ -16,12 +16,12 @@ import { GetSensorReadings }    from './contexts/sensor-data/user-cases/GetSenso
 import { GetSensorStats }       from './contexts/sensor-data/user-cases/GetSensorStats.js';
 import { UpdateAmbienteEstado } from './contexts/sensor-data/user-cases/UpdateAmbienteEstado.js';
 
-import { CreateUser }       from './contexts/user-mangement/use-cases/CreateUser.js';
-import { AuthenticateUser } from './contexts/user-mangement/use-cases/AuthenticateUser.js';
-import { GetUserProfile }   from './contexts/user-mangement/use-cases/GetUserProfile.js';
-import { VerifyEmail }      from './contexts/user-mangement/use-cases/VerifyEmail.js';
-import { ForgotPassword }   from './contexts/user-mangement/use-cases/ForgotPassword.js';
-import { ResetPassword }    from './contexts/user-mangement/use-cases/ResetPassword.js';
+import { CreateUser }        from './contexts/user-mangement/use-cases/CreateUser.js';
+import { AuthenticateUser }  from './contexts/user-mangement/use-cases/AuthenticateUser.js';
+import { GetUserProfile }    from './contexts/user-mangement/use-cases/GetUserProfile.js';
+import { VerifyEmail }       from './contexts/user-mangement/use-cases/VerifyEmail.js';
+import { ForgotPassword }    from './contexts/user-mangement/use-cases/ForgotPassword.js';
+import { ResetPassword }     from './contexts/user-mangement/use-cases/ResetPassword.js';
 import { UpdateUserProfile } from './contexts/user-mangement/use-cases/UpdateUserProfile.js';
 
 import { SensorController } from './contexts/sensor-data/interfaces/Controllers/SensorControllers.js';
@@ -44,16 +44,18 @@ import { logger }              from './shared/utils/logger.js';
 
 export const app = express();
 
+// ── Trust proxy (CRÍTICO para Railway) ───────────────────────────────────────
+app.set('trust proxy', 1);
+
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  process.env.FRONTEND_URL_WWW?.replace(/\/$/, ''), // elimina trailing slash si existe
+  process.env.FRONTEND_URL_WWW?.replace(/\/$/, ''),
 ].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Permite requests sin origin (Postman, mobile, server-to-server)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
     console.warn(`[CORS] Bloqueado: ${origin} | Permitidos: ${allowedOrigins.join(', ')}`);
@@ -66,6 +68,16 @@ app.use(cors({
 // ── Body parsers ──────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
+
+// ── Health check (ANTES de session/passport para responder siempre) ───────────
+app.get('/health', (_req, res) => {
+  res.status(200).json({
+    status:      'ok',
+    timestamp:   new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+  });
+});
 
 
 // ── Session ───────────────────────────────────────────────────────────────────
@@ -97,7 +109,6 @@ export async function initializeApp() {
     const sensorCollection = mongoDb.collection('sensor_readings');
     const eventBus         = new EventBus();
 
-
     // ── Sensor layer ──────────────────────────────────────────────────────────
     const sensorReadingRepo   = new SensorReadingRepository(sensorCollection);
     const recordSensorReading = new RecordSensorReading(sensorReadingRepo, eventBus);
@@ -110,12 +121,10 @@ export async function initializeApp() {
       getSensorStats
     );
 
-
     // ── Ambiente layer ────────────────────────────────────────────────────────
     const ambienteCollection   = mongoDb.collection('ambientes');
     const ambienteRepo         = new AmbienteRepository(ambienteCollection);
     const updateAmbienteEstado = new UpdateAmbienteEstado(ambienteRepo, eventBus);
-
 
     // ── User / Auth layer ─────────────────────────────────────────────────────
     const userRepo     = new UserRepository(mysqlPool);
@@ -140,24 +149,12 @@ export async function initializeApp() {
       updateUserProfile
     );
 
-
     // ── Routes ────────────────────────────────────────────────────────────────
     app.use('/api/sensors',   createSensorRoutes(sensorController));
     app.use('/api/auth',      createAuthRoutes(authController));
     app.use('/api/auth',      googleAuthRoutes);
     app.use('/api/ai',        aiRoutes);
     app.use('/api/ambientes', createAmbienteRoutes(mongoDb, updateAmbienteEstado));
-
-
-    // ── Health check ──────────────────────────────────────────────────────────
-    app.get('/health', (_req, res) => {
-      res.status(200).json({
-        status:      'ok',
-        timestamp:   new Date().toISOString(),
-        environment: process.env.NODE_ENV || 'development',
-        database:    { mongodb: 'connected', mysql: 'connected' }
-      });
-    });
 
 
     // ── Global error handler ──────────────────────────────────────────────────
@@ -173,7 +170,6 @@ export async function initializeApp() {
         }
       });
     });
-
 
     return {
       app,
