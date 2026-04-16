@@ -41,12 +41,19 @@ export function initGoogleStrategy() {
         [result.insertId]
       );
 
+      
+
       return done(null, newUser[0]);
 
-    } catch (err) {
-      console.error('[GoogleStrategy] Error:', err.message);
-      return done(err, null);
-    }
+    } // En googleStrategy.js, dentro del catch:
+catch (err) {
+  console.error('[GoogleStrategy FULL ERROR]');
+  console.error('message:', err.message);
+  console.error('code:', err.code);
+  console.error('hostname:', err.hostname);
+  console.error('syscall:', err.syscall);
+  return done(err, null);
+}
   }));
 
   passport.serializeUser((user, done) => done(null, user.id_usuario));

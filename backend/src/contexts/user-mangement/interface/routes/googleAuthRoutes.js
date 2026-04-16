@@ -53,10 +53,12 @@ router.get(
 
       res.redirect(redirectUrl);
     } catch (err) {
-      console.error('[Google] Error generando token:', err.message);
-      const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
-      res.redirect(`${FRONTEND_URL}/login?error=token_failed`);
-    }
+  console.error('[GoogleRoutes FULL ERROR]');
+  console.error('message:', err.message);
+  console.error('code:', err.code);
+  console.error('hostname:', err.hostname);
+  res.redirect(`${FRONTEND_URL}/login?error=token_failed`);
+}
   }
 );
 
