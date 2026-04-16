@@ -84,6 +84,26 @@ app.get('/health', (_req, res) => {
 });
 
 
+app.use((err, _req, res, _next) => {
+  // LOG COMPLETO TEMPORAL
+  console.error('[FULL ERROR]', JSON.stringify({
+    message: err.message,
+    code: err.code,
+    hostname: err.hostname,
+    stack: err.stack?.split('\n')[0]
+  }));
+  
+  const statusCode = err.statusCode || 500;
+  const message    = err.message    || 'Internal Server Error';
+  res.status(statusCode).json({
+    success: false,
+    error: {
+      message,
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    }
+  });
+});
+
 // ── Session ───────────────────────────────────────────────────────────────────
 app.use(session({
   secret: process.env.SESSION_SECRET || process.env.JWT_SECRET,
