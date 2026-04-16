@@ -70,7 +70,11 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 
-// ── Health check (ANTES de session/passport para responder siempre) ───────────
+// ── Health check ──────────────────────────────────────────────────────────────
+app.get('/', (_req, res) => {
+  res.status(200).json({ status: 'ok', service: 'LuxSense API' });
+});
+
 app.get('/health', (_req, res) => {
   res.status(200).json({
     status:      'ok',
