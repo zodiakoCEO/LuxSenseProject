@@ -39,8 +39,10 @@ router.get(
 
       const params = new URLSearchParams({
         token,
-        name:  user.nombre || '',
-        email: user.email,
+        name:  user.nombre          || '',
+        email: user.email           || '',
+        id:    String(user.id_usuario || ''),
+        role:  String(user.id_rol     || 2),
       });
 
       const redirectUrl = `${FRONTEND_URL}/auth/callback?${params.toString()}`;
