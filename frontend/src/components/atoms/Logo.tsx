@@ -57,7 +57,7 @@ const Logo: React.FC<LogoProps> = ({ fontSize, gradient = true, onClick }) => {
       clickable={clickable} 
       onClick={onClick}
     >
-      DataSense
+      LuxSense
     </LogoTextGradient>
   ) : (
     <LogoTextSolid 
@@ -65,7 +65,7 @@ const Logo: React.FC<LogoProps> = ({ fontSize, gradient = true, onClick }) => {
       clickable={clickable} 
       onClick={onClick}
     >
-      DataSense
+      LuxSense
     </LogoTextSolid>
   );
 };
