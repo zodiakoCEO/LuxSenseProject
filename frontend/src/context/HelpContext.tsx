@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
 
 interface HelpContextType {
   isHelpOpen: boolean;
@@ -8,6 +9,7 @@ interface HelpContextType {
 
 const HelpContext = createContext<HelpContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useHelp = () => {
   const context = useContext(HelpContext);
   if (!context) {
@@ -22,8 +24,7 @@ interface HelpProviderProps {
 
 export const HelpProvider: React.FC<HelpProviderProps> = ({ children }) => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-
-  const openHelp = () => setIsHelpOpen(true);
+  const openHelp  = () => setIsHelpOpen(true);
   const closeHelp = () => setIsHelpOpen(false);
 
   return (

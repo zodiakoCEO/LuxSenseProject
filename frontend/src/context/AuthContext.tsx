@@ -24,9 +24,7 @@ interface AuthContextType {
   refreshProfile: () => Promise<void>;
 }
 
-// Vite expone las variables que empiezan por VITE_* en import.meta.env.[web:16]
-const API_BASE_URL =
-  import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -64,59 +62,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshProfile = async () => {
     if (!token) return;
-
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/profile`, {
+      const res = await fetch(`${API_BASE_URL}/auth/profile`, {
         method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
       });
-
-      if (!res.ok) {
-        // Si el token es inválido/expirado, limpiamos sesión
-        logout();
-        return;
-      }
-
+      if (!res.ok) { logout(); return; }
       const json = await res.json();
-      // Ajusta según el shape exacto de tu backend:
-      // { success: true, data: { ...usuario } }
       const profile: AuthUser = json.data || json.user;
-
       setUser(profile);
       if (typeof window !== 'undefined') {
         localStorage.setItem('user', JSON.stringify(profile));
       }
     } catch (error) {
-      // En caso de error de red, no rompemos la app; solo no actualizamos.
       console.error('Error al refrescar perfil:', error);
     }
   };
 
-  // Al montar el contexto, si hay token pero no user, intentamos recuperar el perfil
   useEffect(() => {
-    if (token && !user) {
-      void refreshProfile();
-    }
+    if (token && !user) void refreshProfile();
   }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        saveSession,
-        logout,
-        isAuthenticated,
-        refreshProfile,
-      }}
-    >
+    <AuthContext.Provider value={{ user, token, saveSession, logout, isAuthenticated, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuth debe usarse dentro de AuthProvider');

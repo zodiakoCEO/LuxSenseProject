@@ -1,5 +1,6 @@
 // src/contexts/SettingsContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
 
 interface SettingsContextType {
   isSettingsOpen: boolean;
@@ -9,6 +10,7 @@ interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSettings = () => {
   const context = useContext(SettingsContext);
   if (!context) {
@@ -23,8 +25,7 @@ interface SettingsProviderProps {
 
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
-  const openSettings = () => setIsSettingsOpen(true);
+  const openSettings  = () => setIsSettingsOpen(true);
   const closeSettings = () => setIsSettingsOpen(false);
 
   return (

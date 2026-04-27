@@ -7,6 +7,7 @@ import RegisterPage from "./components/pages/RegisterPage";
 import AuthCallbackPage from './components/pages/AuthCallbackPage';
 import AmbientesPage from './components/pages/AmbientesPage';
 import DemoDashboardPage from './components/pages/DemoDashboardPage';
+import HistorialPage from './components/pages/HistorialPage';
 import { useAuth } from "./context/AuthContext";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -22,6 +23,7 @@ const App: React.FC = () => {
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        <Route path="/demo" element={<DemoDashboardPage />} />
         <Route path="/Dashboard" element={
           <PrivateRoute>
             <DashboardPage />
@@ -32,7 +34,11 @@ const App: React.FC = () => {
             <AmbientesPage />
           </PrivateRoute>
         } />
-        <Route path="/demo" element={<DemoDashboardPage />} />
+        <Route path="/historial" element={
+          <PrivateRoute>
+            <HistorialPage />
+          </PrivateRoute>
+        } />
       </Routes>
     </Router>
   );
