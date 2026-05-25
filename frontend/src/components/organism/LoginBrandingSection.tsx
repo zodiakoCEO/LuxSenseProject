@@ -39,7 +39,7 @@ const CardContainer = styled.div`
   position: relative;
   max-width: 564px;
   width: 100%;
-  height: 220px;
+  height: 360px;
 `;
 
 /**
@@ -99,9 +99,18 @@ const LoginBrandingSection: React.FC = () => {
 
       <CardContainer>
         <BackCard />
-        <FrontCard>
-          <span>Imagen del testimonio</span>
-        </FrontCard>
+          <FrontCard>
+            <img
+              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop"
+              alt="Testimonio"
+              style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: "center 25%",
+              }}
+            />
+          </FrontCard>
       </CardContainer>
 
       <TestimonialInfo>
